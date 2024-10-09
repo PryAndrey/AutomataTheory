@@ -12,13 +12,11 @@
 #include <set>
 #include <queue>
 
-using namespace std;
-
-using Table = vector<vector<string>>;
+using Table = std::vector<std::vector<std::string>>;
 
 class MooreVer {
 public:
-    explicit MooreVer(std::string state = "", string outSymbol = "")
+    explicit MooreVer(std::string state = "", std::string outSymbol = "")
             : m_state(std::move(state)), m_outSymbol(std::move(outSymbol)) {}
 
     ~MooreVer() {
@@ -32,7 +30,7 @@ public:
         m_state = std::move(state);
     }
 
-    [[nodiscard]] string GetState() const {
+    [[nodiscard]] std::string GetState() const {
         return m_state;
     }
 
@@ -40,15 +38,15 @@ public:
         m_outSymbol = std::move(outSymbol);
     }
 
-    [[nodiscard]] string GetOutSymbol() const {
+    [[nodiscard]] std::string GetOutSymbol() const {
         return m_outSymbol;
     }
 
-    void AddTransition(const string &inSymbol, MooreVer *nextState) {
+    void AddTransition(const std::string &inSymbol, MooreVer *nextState) {
         m_transition[inSymbol] = nextState;
     }
 
-    void RemoveTransition(const string &inSymbol) {
+    void RemoveTransition(const std::string &inSymbol) {
         auto transition = GetTransitionByKey(inSymbol);
         if (!transition) {
             return;
@@ -57,16 +55,17 @@ public:
         m_transition.erase(transition->first);
     }
 
-    [[nodiscard]] std::map<string, MooreVer *> GetTransitions() const {
+    [[nodiscard]] std::map<std::string, MooreVer *> GetTransitions() const {
         return m_transition;
     }
 
-    [[nodiscard]] optional<pair<string, MooreVer *>> GetTransitionByKey(const string &inSymbol) const {
+    [[nodiscard]] std::optional<std::pair<std::string, MooreVer *>>
+    GetTransitionByKey(const std::string &inSymbol) const {
         auto it = m_transition.find(inSymbol);
         if (it != m_transition.end()) {
             return *it;
         }
-        return nullopt;
+        return std::nullopt;
     }
 
     std::string m_oldState;
@@ -74,7 +73,7 @@ private:
 
     std::string m_state;
     std::string m_outSymbol;
-    std::map<string, MooreVer *> m_transition{};
+    std::map<std::string, MooreVer *> m_transition{};
 };
 
 class MealyVer {
@@ -92,15 +91,15 @@ public:
         m_state = std::move(state);
     }
 
-    [[nodiscard]] string GetState() const {
+    [[nodiscard]] std::string GetState() const {
         return m_state;
     }
 
-    void AddTransition(const string &inSymbol, const string &outSymbol, MealyVer *nextState) {
-        m_transition[inSymbol] = pair(outSymbol, nextState);
+    void AddTransition(const std::string &inSymbol, const std::string &outSymbol, MealyVer *nextState) {
+        m_transition[inSymbol] = std::pair(outSymbol, nextState);
     }
 
-    void RemoveTransition(const string &inSymbol) {
+    void RemoveTransition(const std::string &inSymbol) {
         auto transition = GetTransitionByKey(inSymbol);
         if (!transition) {
             return;
@@ -109,16 +108,17 @@ public:
         m_transition.erase(transition->first);
     }
 
-    [[nodiscard]] std::map<string, pair<string, MealyVer *>> GetTransitions() const {
+    [[nodiscard]] std::map<std::string, std::pair<std::string, MealyVer *>> GetTransitions() const {
         return m_transition;
     }
 
-    [[nodiscard]] optional<pair<string, pair<string, MealyVer *>>> GetTransitionByKey(const string &inSymbol) const {
+    [[nodiscard]] std::optional<std::pair<std::string, std::pair<std::string, MealyVer *>>>
+    GetTransitionByKey(const std::string &inSymbol) const {
         auto it = m_transition.find(inSymbol);
         if (it != m_transition.end()) {
             return *it;
         }
-        return nullopt;
+        return std::nullopt;
     }
 
     std::string m_oldState;
@@ -126,10 +126,10 @@ private:
 
     std::string m_state;
     //           <inSymbol> -> {outSymbol, MealyVer};
-    std::map<string, pair<string, MealyVer *>> m_transition{};
+    std::map<std::string, std::pair<std::string, MealyVer *>> m_transition{};
 };
 
-pair<string, string> SplitMealyState(const std::string &input) {
+std::pair<std::string, std::string> SplitMealyState(const std::string &input) {
     std::stringstream ss(input);
 
     std::string item1, item2;
@@ -141,7 +141,7 @@ pair<string, string> SplitMealyState(const std::string &input) {
 Table ReadMealyToTable(const std::string &filename) {
     std::ifstream file(filename);
     if (!file.is_open()) {
-        throw invalid_argument("Can`t open file" + filename);
+        throw std::invalid_argument("Can`t open file" + filename);
     }
     Table mealyTable;
     std::string line;
@@ -157,7 +157,7 @@ Table ReadMealyToTable(const std::string &filename) {
             if (!state.empty() && state != "\"\"") {
                 mealyTable[0].push_back(state);
             } else {
-                throw invalid_argument("Wrong states format");
+                throw std::invalid_argument("Wrong states format");
             }
         }
     }
@@ -188,49 +188,49 @@ void WriteTableCout(const Table &table, int space = 5) {
     for (auto &row: table) {
         for (int i = 0; i < row.size(); ++i) {
             if (i == 0) {
-                cout << row[0];
+                std::cout << row[0];
             } else {
                 if (row[i].empty()) {
-                    cout << setw(space) << "--";
+                    std::cout << std::setw(space) << "--";
                 } else {
-                    cout << setw(space) << row[i];
+                    std::cout << std::setw(space) << row[i];
                 }
             }
         }
-        cout << endl;
+        std::cout << std::endl;
     }
-    cout << "----------------------" << endl;
+    std::cout << "----------------------" << std::endl;
 }
 
 void WriteMealyFromTable(const std::string &filename, Table &mealyTable) {
     std::ofstream file(filename);
     if (!file.is_open()) {
-        throw invalid_argument("Can`t open file" + filename);
+        throw std::invalid_argument("Can`t open file" + filename);
     }
 
     for (int j = 1; j < mealyTable[0].size(); ++j) {
         file << ";" << mealyTable[0][j];
     }
-    file << endl;
+    file << std::endl;
 
     for (int i = 1; i < mealyTable.size(); ++i) {
         file << mealyTable[i][0];
         for (int j = 1; j < mealyTable[i].size(); ++j) {
             file << ";" << mealyTable[i][j];
         }
-        file << endl;
+        file << std::endl;
     }
 
     file.close();
 }
 
 Table MealyGraphToTable(MealyVer *startVer) {
-    queue<MealyVer *> stateQueue;
+    std::queue<MealyVer *> stateQueue;
     stateQueue.push(startVer);
 
     // Получаем map состояний к вершинам
-    map<string, MealyVer *> stateMap;
-    set<string> inSet;
+    std::map<std::string, MealyVer *> stateMap;
+    std::set<std::string> inSet;
     while (!stateQueue.empty()) {
         auto ver = stateQueue.front();
         stateQueue.pop();
@@ -278,26 +278,24 @@ MealyVer *TableToMealyGraph(const Table &table) {
     }
 //  Создаем состояния
 //  map[колонка в таблице] = вершина
-    map<int, MealyVer *> tempMap;
+    std::map<int, MealyVer *> mealyMap;
     auto startVer = new MealyVer(table[0][1]);
-    tempMap[1] = startVer;
+    mealyMap[1] = startVer;
     for (int i = 2; i < table[0].size(); ++i) {
         auto ver = new MealyVer(table[0][i]);
-        tempMap[i] = ver;
+        mealyMap[i] = ver;
     }
 
-    for (auto &[index, ver]: tempMap) {
+    for (auto &[index, ver]: mealyMap) {
         for (int i = 1; i < table.size(); ++i) {
             bool emptyTransition = true;
             auto [state, outSymbol] = SplitMealyState(table[i][index]);
-            for (auto &[index1, ver1]: tempMap) {
-
+            for (auto &[index1, ver1]: mealyMap) {
                 if (ver1->GetState() == state) {
                     ver->AddTransition(table[i][0], outSymbol, ver1);
                     emptyTransition = false;
                     break;
                 }
-
             }
             if (emptyTransition) {
                 ver->AddTransition(table[i][0], "", new MealyVer);
@@ -309,10 +307,9 @@ MealyVer *TableToMealyGraph(const Table &table) {
 }
 
 void RenameMooreGraphStates(MooreVer *startVer, const std::string &symbol) {
-
-    queue<MooreVer *> stateQueue; // очередь для обхода графа
-    map<string, MooreVer *> visitedMooreVers; // Посещенные вершины
-    map<string, string> convertStates;
+    std::queue<MooreVer *> stateQueue; // очередь для обхода графа
+    std::map<std::string, MooreVer *> visitedMooreVers; // Посещенные вершины
+    std::map<std::string, std::string> convertStates;
 
     stateQueue.push(startVer);
     int index = 0;
@@ -322,7 +319,7 @@ void RenameMooreGraphStates(MooreVer *startVer, const std::string &symbol) {
         if (ver->GetState().empty())
             continue;
         if (visitedMooreVers.find(ver->GetState()) == visitedMooreVers.end()) {
-            convertStates[ver->GetState()] = symbol + to_string(index++);
+            convertStates[ver->GetState()] = symbol + std::to_string(index++);
             for (auto &[inSymbol, nextVer]: ver->GetTransitions()) {
                 stateQueue.push(nextVer);
             }
@@ -338,21 +335,21 @@ void RenameMooreGraphStates(MooreVer *startVer, const std::string &symbol) {
 void WriteMooreFromTable(const std::string &filename, Table &mooreTable) {
     std::ofstream file(filename);
     if (!file.is_open()) {
-        throw invalid_argument("Can`t open file" + filename);
+        throw std::invalid_argument("Can`t open file" + filename);
     }
     for (int i = 0; i < mooreTable.size(); ++i) {
         if (i < 2) {
             for (int j = 1; j < mooreTable[i].size(); ++j) {
                 file << ";" << mooreTable[i][j];
             }
-            file << endl;
+            file << std::endl;
             continue;
         }
         file << mooreTable[i][0];
         for (int j = 1; j < mooreTable[i].size(); ++j) {
             file << ";" << mooreTable[i][j];
         }
-        file << endl;
+        file << std::endl;
     }
 
     file.close();
@@ -364,7 +361,7 @@ MooreVer *TableToMooreGraph(const Table &table) {
     }
 //  Создаем состояния
 //  map[колонка в таблице] = вершина
-    map<int, MooreVer *> tempMap;
+    std::map<int, MooreVer *> tempMap;
     auto startVer = new MooreVer(table[1][1], table[0][1]);
     tempMap[1] = startVer;
     for (int i = 2; i < table[0].size(); ++i) {
@@ -392,12 +389,12 @@ MooreVer *TableToMooreGraph(const Table &table) {
 }
 
 Table MooreGraphToTable(MooreVer *startVer) {
-    queue<MooreVer *> stateQueue;
+    std::queue<MooreVer *> stateQueue;
     stateQueue.push(startVer);
 
     // Получаем map состояний к вершинам
-    map<string, MooreVer *> stateMap;
-    set<string> inSet;
+    std::map<std::string, MooreVer *> stateMap;
+    std::set<std::string> inSet;
     while (!stateQueue.empty()) {
         auto ver = stateQueue.front();
         stateQueue.pop();
@@ -440,7 +437,7 @@ Table MooreGraphToTable(MooreVer *startVer) {
 Table ReadMooreToTable(const std::string &filename) {
     std::ifstream file(filename);
     if (!file.is_open()) {
-        throw invalid_argument("Can`t open file" + filename);
+        throw std::invalid_argument("Can`t open file" + filename);
     }
     Table mooreTable;
     std::string line;
@@ -457,7 +454,7 @@ Table ReadMooreToTable(const std::string &filename) {
             if (!outSignals.empty() && outSignals != "\"\"") {
                 mooreTable[0].push_back(outSignals);
             } else {
-                throw invalid_argument("Wrong out symbols format");
+                throw std::invalid_argument("Wrong out symbols format");
             }
         }
     }
@@ -471,7 +468,7 @@ Table ReadMooreToTable(const std::string &filename) {
             if (!state.empty() && state != "\"\"") {
                 mooreTable[1].push_back(state);
             } else {
-                throw invalid_argument("Wrong state format");
+                throw std::invalid_argument("Wrong state format");
             }
         }
     }
@@ -500,9 +497,9 @@ Table ReadMooreToTable(const std::string &filename) {
 
 
 MooreVer *MealyToMoore(MealyVer *startMealyVer) {
-    queue<MealyVer *> stateQueue; // очередь для обхода графа
-    map<string, MealyVer *> visitedMealyVers; // Посещенные вершины
-    map<string, MooreVer *> mooreStateMap; // map новых Moore вершин
+    std::queue<MealyVer *> stateQueue; // очередь для обхода графа
+    std::map<std::string, MealyVer *> visitedMealyVers; // Посещенные вершины
+    std::map<std::string, MooreVer *> mooreStateMap; // map новых Moore вершин
     stateQueue.push(startMealyVer);
     while (!stateQueue.empty()) {
         auto ver = stateQueue.front();
@@ -515,7 +512,7 @@ MooreVer *MealyToMoore(MealyVer *startMealyVer) {
             if (nextOutSymbolVer.second->GetState().empty()) {
                 continue;
             }
-            const string nextState = nextOutSymbolVer.second->GetState() + "/" + nextOutSymbolVer.first;
+            const std::string nextState = nextOutSymbolVer.second->GetState() + "/" + nextOutSymbolVer.first;
             if (visitedMealyVers.find(nextState) != visitedMealyVers.end()) {
                 continue;
             }
@@ -529,7 +526,7 @@ MooreVer *MealyToMoore(MealyVer *startMealyVer) {
     }
 
     auto startMooreVer = mooreStateMap.begin()->second;
-
+    // Добавляем переходы
     for (auto &[MealyTransitionName, mooreVer]: mooreStateMap) {
         auto it = visitedMealyVers.find(MealyTransitionName);
         if (it != visitedMealyVers.end()) { // Нашли mooreVer <=> mealyVer
@@ -538,7 +535,8 @@ MooreVer *MealyToMoore(MealyVer *startMealyVer) {
                     mooreVer->AddTransition(inSymbol, new MooreVer());
                     continue;
                 }
-                const string nextState = outSymbolAndMealyVer.second->GetState() + "/" + outSymbolAndMealyVer.first;
+                const std::string nextState =
+                        outSymbolAndMealyVer.second->GetState() + "/" + outSymbolAndMealyVer.first;
                 mooreVer->AddTransition(inSymbol, mooreStateMap.find(nextState)->second);
             }
         }
@@ -549,9 +547,9 @@ MooreVer *MealyToMoore(MealyVer *startMealyVer) {
 
 MealyVer *MooreToMealy(MooreVer *startMooreVer) {
 
-    queue<MooreVer *> stateQueue; // очередь для обхода графа
-    map<string, MooreVer *> visitedMooreVers; // Посещенные вершины
-    map<string, MealyVer *> mealyStateMap; // map новых Mealy вершин
+    std::queue<MooreVer *> stateQueue; // очередь для обхода графа
+    std::map<std::string, MooreVer *> visitedMooreVers; // Посещенные вершины
+    std::map<std::string, MealyVer *> mealyStateMap; // map новых Mealy вершин
     stateQueue.push(startMooreVer);
 
     // Собираем 2 map состояний
@@ -569,10 +567,10 @@ MealyVer *MooreToMealy(MooreVer *startMooreVer) {
             if (visitedMooreVers.find(nextVer->GetState()) != visitedMooreVers.end()) {
                 continue;
             }
-            const string nextState = nextVer->GetState() + "/" + nextVer->GetOutSymbol();
+            const std::string nextState = nextVer->GetState() + "/" + nextVer->GetOutSymbol();
             if (mealyStateMap.find(nextState) == mealyStateMap.end()) {
-                auto mooreVer = new MealyVer(nextVer->GetState());
-                mealyStateMap[nextState] = mooreVer;
+                auto mealyVer = new MealyVer(nextVer->GetState());
+                mealyStateMap[nextState] = mealyVer;
                 visitedMooreVers[nextState] = nextVer; // Помечаем что уже были в этой вершине
                 stateQueue.push(nextVer);
             }
@@ -590,7 +588,7 @@ MealyVer *MooreToMealy(MooreVer *startMooreVer) {
                     mealyVer->AddTransition(inSymbol, "", new MealyVer());
                     continue;
                 }
-                const string nextState = mooreVer->GetState() + "/" + mooreVer->GetOutSymbol();
+                const std::string nextState = mooreVer->GetState() + "/" + mooreVer->GetOutSymbol();
                 auto it1 = mealyStateMap.find(nextState);
                 if (it1 != mealyStateMap.end()) {
                     mealyVer->AddTransition(inSymbol, mooreVer->GetOutSymbol(), it1->second);

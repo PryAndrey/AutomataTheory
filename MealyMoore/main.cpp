@@ -15,7 +15,7 @@ int main(int argc, char *argv[]) {
     if (command == "mealy-to-moore") {
         try {
             Table mealyTable = ReadMealyToTable(inputFile);
-            cout << "Read mealy" << endl;
+            std::cout << "Read mealy" << std::endl;
 //            WriteTableCout(mealyTable, 6);
 
             MealyVer* startVer = TableToMealyGraph(mealyTable);
@@ -27,12 +27,12 @@ int main(int argc, char *argv[]) {
 //            WriteTableCout(mooreTable);
             WriteMooreFromTable(outputFile, mooreTable);
 
-        } catch (exception &e) {
-            cout << e.what();
+        } catch (std::exception &e) {
+            std::cout << e.what();
         }
     } else if (command == "moore-to-mealy") {
         try {
-            cout << "Read moore" << endl;
+            std::cout << "Read moore" << std::endl;
             Table mooreTable = ReadMooreToTable(inputFile);
             WriteTableCout(mooreTable, 3);
 
@@ -43,8 +43,8 @@ int main(int argc, char *argv[]) {
             WriteTableCout(mealyTable);
             WriteMealyFromTable(outputFile, mealyTable);
 
-        } catch (exception &e) {
-            cout << e.what();
+        } catch (std::exception &e) {
+            std::cout << e.what();
         }
     }
     return 0;
