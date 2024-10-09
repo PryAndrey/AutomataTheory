@@ -1,5 +1,6 @@
 #include "Milly-Murr_V2.cpp"
 #include <iostream>
+#include <chrono>
 
 int main(int argc, char *argv[]) {
     if (argc != 5) {
@@ -14,18 +15,26 @@ int main(int argc, char *argv[]) {
     std::string outputFile = argv[4];
     if (command == "mealy-to-moore") {
         try {
+            auto TC1 = std::chrono::high_resolution_clock::now();
             Table mealyTable = ReadMealyToTable(inputFile);
-            std::cout << "Read mealy" << std::endl;
-//            WriteTableCout(mealyTable, 6);
+            auto TC2 = std::chrono::high_resolution_clock::now();
+            std::cout << "Read " << std::chrono::duration<double>(TC2 - TC1).count() << std::endl;
 
-            MealyVer* startVer = TableToMealyGraph(mealyTable);
+            MealyVer *startVer = TableToMealyGraph(mealyTable);
+            auto TC3 = std::chrono::high_resolution_clock::now();
+            std::cout << "To graph " << std::chrono::duration<double>(TC3 - TC2).count() << std::endl;
 
-            MooreVer* startMooreVer = MealyToMoore(startVer);
+            auto [startMooreVer, mooreMap] = MealyToMoore(startVer);
+            auto TC4 = std::chrono::high_resolution_clock::now();
+            std::cout << "Mealy to Moore " << std::chrono::duration<double>(TC4 - TC3).count() << std::endl;
 
             Table mooreTable = MooreGraphToTable(startMooreVer);
+            auto TC5 = std::chrono::high_resolution_clock::now();
+            std::cout << "To table " << std::chrono::duration<double>(TC5 - TC4).count() << std::endl;
 
-//            WriteTableCout(mooreTable);
             WriteMooreFromTable(outputFile, mooreTable);
+            auto TC6 = std::chrono::high_resolution_clock::now();
+            std::cout << "Write " << std::chrono::duration<double>(TC6 - TC5).count() << std::endl;
 
         } catch (std::exception &e) {
             std::cout << e.what();
@@ -34,15 +43,10 @@ int main(int argc, char *argv[]) {
         try {
             std::cout << "Read moore" << std::endl;
             Table mooreTable = ReadMooreToTable(inputFile);
-            WriteTableCout(mooreTable, 3);
-
-            MooreVer* startVer = TableToMooreGraph(mooreTable);
-
-            MealyVer* startMealyVer = MooreToMealy(startVer);
+            MooreVer *startVer = TableToMooreGraph(mooreTable);
+            MealyVer *startMealyVer = MooreToMealy(startVer);
             Table mealyTable = MealyGraphToTable(startMealyVer);
-            WriteTableCout(mealyTable);
             WriteMealyFromTable(outputFile, mealyTable);
-
         } catch (std::exception &e) {
             std::cout << e.what();
         }

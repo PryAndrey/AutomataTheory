@@ -278,26 +278,25 @@ MealyVer *TableToMealyGraph(const Table &table) {
     }
 //  Создаем состояния
 //  map[колонка в таблице] = вершина
-    std::map<int, MealyVer *> mealyMap;
+    std::map<int, MealyVer *> mealyIndexMap;
+    std::map<std::string, MealyVer *> mealyStateMap;
     auto startVer = new MealyVer(table[0][1]);
-    mealyMap[1] = startVer;
+    mealyIndexMap[1] = startVer;
+    mealyStateMap[startVer->GetState()] = startVer;
+
     for (int i = 2; i < table[0].size(); ++i) {
         auto ver = new MealyVer(table[0][i]);
-        mealyMap[i] = ver;
+        mealyIndexMap[i] = ver;
+        mealyStateMap[ver->GetState()] = ver;
     }
 
-    for (auto &[index, ver]: mealyMap) {
+    for (auto &[index, ver]: mealyIndexMap) {
         for (int i = 1; i < table.size(); ++i) {
-            bool emptyTransition = true;
             auto [state, outSymbol] = SplitMealyState(table[i][index]);
-            for (auto &[index1, ver1]: mealyMap) {
-                if (ver1->GetState() == state) {
-                    ver->AddTransition(table[i][0], outSymbol, ver1);
-                    emptyTransition = false;
-                    break;
-                }
-            }
-            if (emptyTransition) {
+            auto it = mealyStateMap.find(state);
+            if (it != mealyStateMap.end()) {
+                ver->AddTransition(table[i][0], outSymbol, it->second);
+            } else {
                 ver->AddTransition(table[i][0], "", new MealyVer);
             }
         }
@@ -395,6 +394,8 @@ Table MooreGraphToTable(MooreVer *startVer) {
     // Получаем map состояний к вершинам
     std::map<std::string, MooreVer *> stateMap;
     std::set<std::string> inSet;
+    std::set<std::string> visitedVersSet;
+    visitedVersSet.insert(startVer->GetState());
     while (!stateQueue.empty()) {
         auto ver = stateQueue.front();
         stateQueue.pop();
@@ -404,13 +405,15 @@ Table MooreGraphToTable(MooreVer *startVer) {
         stateMap[ver->GetState()] = ver;
         for (auto &[inSymbol, nextVer]: ver->GetTransitions()) {
             inSet.insert(inSymbol);
-            if (stateMap.find(nextVer->GetState()) == stateMap.end()) {
+            if (visitedVersSet.find(nextVer->GetState()) == visitedVersSet.end()) {
+                visitedVersSet.insert(nextVer->GetState());
                 stateQueue.push(nextVer);
             }
         }
     }
     //Заполняем вх символы
     Table mooreTable;
+    mooreTable.reserve(inSet.size() + 2);
     mooreTable.push_back({"\\ "});
     mooreTable.push_back({" \\"});
     for (const auto &in: inSet) {
@@ -496,7 +499,7 @@ Table ReadMooreToTable(const std::string &filename) {
 }
 
 
-MooreVer *MealyToMoore(MealyVer *startMealyVer) {
+std::pair<MooreVer *, std::map<std::string, MooreVer *>> MealyToMoore(MealyVer *startMealyVer) {
     std::queue<MealyVer *> stateQueue; // очередь для обхода графа
     std::map<std::string, MealyVer *> visitedMealyVers; // Посещенные вершины
     std::map<std::string, MooreVer *> mooreStateMap; // map новых Moore вершин
@@ -542,7 +545,7 @@ MooreVer *MealyToMoore(MealyVer *startMealyVer) {
         }
     }
     RenameMooreGraphStates(startMooreVer, "q");
-    return startMooreVer;
+    return {startMooreVer, mooreStateMap};
 }
 
 MealyVer *MooreToMealy(MooreVer *startMooreVer) {
