@@ -1,0 +1,5 @@
+# ninja log v5
+4	475	7499380711679453	build.ninja	3d88f3b2a03a5f7
+2	2066	7497288847051900	CMakeFiles/AutomataTheory.dir/main.cpp.obj	f206d41546b60fac
+3	1959	7499319414478015	CMakeFiles/MealyMoore.dir/main.cpp.obj	674f0e486fd2a72d
+1960	2470	7499319419599076	MealyMoore.exe	8828f804f3f68fba
