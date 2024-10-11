@@ -1,4 +1,4 @@
-#include "Milly-Murr_V2.cpp"
+#include "Milly-Murr_V2.h"
 #include <iostream>
 #include <chrono>
 
@@ -19,23 +19,18 @@ int main(int argc, char *argv[]) {
             Table mealyTable = ReadMealyToTable(inputFile);
             auto TC2 = std::chrono::high_resolution_clock::now();
             std::cout << "Read " << std::chrono::duration<double>(TC2 - TC1).count() << std::endl;
-
             MealyVer *startVer = TableToMealyGraph(mealyTable);
             auto TC3 = std::chrono::high_resolution_clock::now();
             std::cout << "To graph " << std::chrono::duration<double>(TC3 - TC2).count() << std::endl;
-
-            auto [startMooreVer, mooreMap] = MealyToMoore(startVer);
+            auto startMooreVer = MealyToMoore(startVer);
             auto TC4 = std::chrono::high_resolution_clock::now();
             std::cout << "Mealy to Moore " << std::chrono::duration<double>(TC4 - TC3).count() << std::endl;
-
             Table mooreTable = MooreGraphToTable(startMooreVer);
             auto TC5 = std::chrono::high_resolution_clock::now();
             std::cout << "To table " << std::chrono::duration<double>(TC5 - TC4).count() << std::endl;
-
             WriteMooreFromTable(outputFile, mooreTable);
             auto TC6 = std::chrono::high_resolution_clock::now();
             std::cout << "Write " << std::chrono::duration<double>(TC6 - TC5).count() << std::endl;
-
         } catch (std::exception &e) {
             std::cout << e.what();
         }
