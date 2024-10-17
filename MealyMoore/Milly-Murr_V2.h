@@ -11,8 +11,7 @@
 #include <map>
 #include <set>
 #include <queue>
-
-using Table = std::vector<std::vector<std::string>>;
+#include "sstream"
 
 class MooreVer {
 public:
@@ -121,13 +120,18 @@ public:
         return std::nullopt;
     }
 
-    std::string m_oldState;
 private:
 
     std::string m_state;
     //           <inSymbol> -> {outSymbol, MealyVer};
     std::map<std::string, std::pair<std::string, MealyVer *>> m_transition{};
 };
+
+using Table = std::vector<std::vector<std::string>>;
+//                      комбинация вых символы -> [Имя группы  ->  [в1, в2]]
+using MinimizeMap = std::map<std::string, std::map<std::string, std::set<MealyVer *>>>;
+//                              Состояние  ->   имя группы, вершина
+using TransitionMap = std::map<std::string, std::pair<std::string, MealyVer *>>;
 
 std::pair<std::string, std::string> SplitMealyState(const std::string &input);
 
@@ -137,22 +141,22 @@ void WriteTableCout(const Table &table, int space = 5);
 
 void WriteMealyFromTable(const std::string &filename, Table &mealyTable);
 
-Table MealyGraphToTable(MealyVer *startVer) ;
+Table MealyGraphToTable(MealyVer *startVer);
 
 MealyVer *TableToMealyGraph(const Table &table);
 
-void RenameMooreGraphStates(MooreVer *startVer, const std::string &symbol);
 
+void WriteMooreFromTable(const std::string &filename, Table &mooreTable);
 
-void WriteMooreFromTable(const std::string &filename, Table &mooreTable) ;
+MooreVer *TableToMooreGraph(const Table &table);
 
-MooreVer *TableToMooreGraph(const Table &table) ;
-
-Table MooreGraphToTable(MooreVer *startVer) ;
+Table MooreGraphToTable(MooreVer *startVer);
 
 Table ReadMooreToTable(const std::string &filename);
 
 
-MooreVer * MealyToMoore(MealyVer *startMealyVer);
+MooreVer *MealyToMoore(MealyVer *startMealyVer);
 
-MealyVer *MooreToMealy(MooreVer *startMooreVer) ;
+MealyVer *MooreToMealy(MooreVer *startMooreVer);
+
+//MealyVer *MinimizeMealy(MealyVer *startMealyVer);

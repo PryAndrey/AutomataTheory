@@ -1,4 +1,5 @@
 #pragma once
+
 #include "Milly-Murr_V2.h"
 
 std::pair<std::string, std::string> SplitMealyState(const std::string &input) {
@@ -177,7 +178,7 @@ MealyVer *TableToMealyGraph(const Table &table) {
     return startVer;
 }
 
-void RenameMooreGraphStates(MooreVer *startVer, const std::string &symbol) {
+void RenameMooreGraphStates(MooreVer *startVer, const std::string &symbol = "q") {
     std::queue<MooreVer *> stateQueue; // очередь для обхода графа
     std::map<std::string, MooreVer *> visitedMooreVers; // Посещенные вершины
     std::map<std::string, std::string> convertStates;
@@ -296,14 +297,12 @@ Table MooreGraphToTable(MooreVer *startVer) {
         mooreTable[0].push_back(ver->GetOutSymbol()); // вх символ
         mooreTable[1].push_back(state);               // текущее состояние
         for (auto &[inSymbol, nextVer]: ver->GetTransitions()) {
-            //todo проверять на пустые
             for (int i = 2; i < mooreTable.size(); ++i) {
                 if (mooreTable[i][0] == inSymbol) {
                     mooreTable[i].push_back(nextVer->GetState());
                     break;
                 }
             }
-
         }
     }
     return mooreTable;
@@ -416,7 +415,7 @@ MooreVer *MealyToMoore(MealyVer *startMealyVer) {
             }
         }
     }
-    RenameMooreGraphStates(startMooreVer, "q");
+    RenameMooreGraphStates(startMooreVer);
     return startMooreVer;
 }
 
@@ -473,3 +472,156 @@ MealyVer *MooreToMealy(MooreVer *startMooreVer) {
     }
     return startMealyVer;
 }
+
+size_t UniqueNames(MinimizeMap &minimizeMap) {
+    size_t count = 0;
+    for (auto [outSymbolComb, newNamesMap]: minimizeMap) {
+        count += newNamesMap.size();
+    }
+    return count;
+}
+/*
+void RenameMealyGraphStates(MealyVer *startVer, const std::string &symbol) {
+    std::queue<MealyVer *> stateQueue; // очередь для обхода графа
+    std::map<std::string, MealyVer *> visitedMealyVers; // Посещенные вершины
+    std::map<std::string, std::string> convertStates;
+
+    stateQueue.push(startVer);
+
+    int index = 0;
+    while (!stateQueue.empty()) {
+        auto ver = stateQueue.front();
+        stateQueue.pop();
+        if (ver->GetState().empty())
+            continue;
+        if (visitedMooreVers.find(ver->GetState()) == visitedMooreVers.end()) {
+            convertStates[ver->GetState()] = symbol + std::to_string(index++);
+            for (auto &[inSymbol, nextVer]: ver->GetTransitions()) {
+                stateQueue.push(nextVer);
+            }
+        }
+        visitedMooreVers[ver->GetState()] = ver;
+    }
+    for (auto &[state, ver]: visitedMooreVers) {
+        ver->SetState(convertStates[state]);
+    }
+}
+
+void InitMooreMinimize(MealyVer *startMealyVer, MinimizeMap &minimizeMap, TransitionMap &transitionMap) {
+    int charIndex = 1;
+
+    std::queue<MealyVer *> stateQueue; // очередь для обхода графа
+    std::set<std::string> visitedMealyVers; // Посещенные вершины
+    stateQueue.push(startMealyVer);
+    while (!stateQueue.empty()) {
+        auto ver = stateQueue.front();
+        stateQueue.pop();
+        if (ver->GetState().empty()) {
+            continue;
+        }
+        // формируем комбинации вых. символов и заполняем nextMinimizeMap
+        std::string outSymbolComb;
+        for (auto &[inSymbol, nextOutSymbolVer]: ver->GetTransitions()) {
+            outSymbolComb += !nextOutSymbolVer.first.empty() ? nextOutSymbolVer.first : "-";
+            const std::string nextState = nextOutSymbolVer.second->GetState() + "/" + nextOutSymbolVer.first;
+            if (visitedMealyVers.find(nextState) != visitedMealyVers.end()) {
+                continue;
+            }
+            if (nextOutSymbolVer.second->GetState() == startMealyVer->GetState()) {
+                visitedMealyVers.insert(nextState); // Помечаем что были в 1 вершине
+                continue;
+            }
+            visitedMealyVers.insert(nextState); // Помечаем что уже были в этой вершине
+            stateQueue.push(nextOutSymbolVer.second);
+        }
+        auto it = minimizeMap.find(outSymbolComb);
+        if (it == minimizeMap.end()) {
+            std::map<std::string, std::set<MealyVer *>> temp;
+            transitionMap[ver->GetState()] = {"q" + std::to_string(charIndex), ver};
+            temp["q" + std::to_string(charIndex)] = {ver};
+            minimizeMap[outSymbolComb] = temp;
+            charIndex++;
+        } else {
+            transitionMap[ver->GetState()] = {it->second.begin()->first, ver};
+            it->second.begin()->second.insert(ver);
+        }
+    }
+}
+
+MealyVer *MinimizeMealy(MealyVer *startMealyVer) {
+    MinimizeMap minimizeMap;
+    TransitionMap transitionMap;
+    //Разделение по комб. вых. символов
+    InitMooreMinimize(startMealyVer, minimizeMap, transitionMap);
+
+    size_t prevCount = 0;
+    while (UniqueNames(minimizeMap) != prevCount) {
+        prevCount = UniqueNames(minimizeMap);
+        int charIndex = 1;
+        MinimizeMap minimizeTemp;
+        TransitionMap transitionTemp;
+
+        for (auto &[outSymbolComb, newNamesMap]: minimizeMap) {
+            for (auto &[groupName, statesSet]: newNamesMap) {
+                for (auto &state: statesSet) {
+                    std::string newOutSymbolComb;
+                    for (auto &[inSymbol, nextOutSymbolVer]: state->GetTransitions()) {
+                        newOutSymbolComb += !nextOutSymbolVer.second->GetState().empty()
+                                            ? transitionMap[nextOutSymbolVer.second->GetState()].first : "-";
+                    }
+                    auto it = minimizeTemp.find(outSymbolComb);
+                    if (it == minimizeTemp.end()) {
+                        std::map<std::string, std::set<MealyVer *>> temp;
+                        temp[newOutSymbolComb] = {state};
+                        minimizeTemp[outSymbolComb] = temp;
+                        transitionTemp[state->GetState()] = {"q" + std::to_string(charIndex), state};
+                        charIndex++;
+                    } else {
+                        auto it1 = it->second.find(newOutSymbolComb);
+                        if (it1 != it->second.end()) {
+                            it1->second.insert(state);
+                            transitionTemp[state->GetState()] = {
+                                    transitionTemp[(*it1->second.begin())->GetState()].first, state};
+                        } else {
+                            it->second[newOutSymbolComb] = {state};
+                            transitionTemp[state->GetState()] = {"q" + std::to_string(charIndex), state};
+                            charIndex++;
+                        }
+                    }
+                }
+            }
+        }
+        minimizeMap = minimizeTemp;
+        transitionMap = transitionTemp;
+    }
+
+    // Склеивание
+    std::map<std::string, MealyVer *> newStates;
+    auto *newStartVer = new MealyVer(transitionMap[startMealyVer->GetState()].first);
+    newStates[newStartVer->GetState()] = newStartVer;
+    for (auto &[outSymbolComb, newNamesMap]: minimizeMap) {
+        for (auto &[groupName, statesSet]: newNamesMap) {
+            if (newStates.find(transitionMap[(*statesSet.begin())->GetState()].first) == newStates.end()) {
+                auto *ver = new MealyVer(transitionMap[(*statesSet.begin())->GetState()].first);
+                newStates[ver->GetState()] = ver;
+            } else {
+                continue;
+            }
+        }
+    }
+
+    std::map<std::string, MealyVer *> reversUniqueTransitionMap;
+    for (auto &[stateName, groupNameAndState]: transitionMap) {
+        reversUniqueTransitionMap[groupNameAndState.first] = groupNameAndState.second;
+    }
+
+    for (auto &[stateName, newState]: newStates) {
+        for (auto &[inSymbol, nextOutSymbolVer]: reversUniqueTransitionMap[stateName]->GetTransitions()) {
+            newState->AddTransition(inSymbol,
+                                    nextOutSymbolVer.first,
+                                    newStates.find(transitionMap[nextOutSymbolVer.second->GetState()].first)->second
+                                    );
+        }
+    }
+    return newStartVer;
+}*/
