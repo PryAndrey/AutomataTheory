@@ -55,11 +55,17 @@ build CMakeFiles/MealyMoore.dir/main.cpp.obj: CXX_COMPILER__MealyMoore_Debug C$:
   OBJECT_DIR = CMakeFiles\MealyMoore.dir
   OBJECT_FILE_DIR = CMakeFiles\MealyMoore.dir
 
-build CMakeFiles/MealyMoore.dir/Milly-Murr_V2.cpp.obj: CXX_COMPILER__MealyMoore_Debug C$:/Users/ANDREY/Documents/GitHub/AutomataTheory/MealyMoore/Milly-Murr_V2.cpp || cmake_object_order_depends_target_MealyMoore
-  DEP_FILE = CMakeFiles\MealyMoore.dir\Milly-Murr_V2.cpp.obj.d
+build CMakeFiles/MealyMoore.dir/MMV3/MealyGraph.cpp.obj: CXX_COMPILER__MealyMoore_Debug C$:/Users/ANDREY/Documents/GitHub/AutomataTheory/MealyMoore/MMV3/MealyGraph.cpp || cmake_object_order_depends_target_MealyMoore
+  DEP_FILE = CMakeFiles\MealyMoore.dir\MMV3\MealyGraph.cpp.obj.d
   FLAGS = -g -fdiagnostics-color=always -std=gnu++1z
   OBJECT_DIR = CMakeFiles\MealyMoore.dir
-  OBJECT_FILE_DIR = CMakeFiles\MealyMoore.dir
+  OBJECT_FILE_DIR = CMakeFiles\MealyMoore.dir\MMV3
+
+build CMakeFiles/MealyMoore.dir/MMV3/MooreGraph.cpp.obj: CXX_COMPILER__MealyMoore_Debug C$:/Users/ANDREY/Documents/GitHub/AutomataTheory/MealyMoore/MMV3/MooreGraph.cpp || cmake_object_order_depends_target_MealyMoore
+  DEP_FILE = CMakeFiles\MealyMoore.dir\MMV3\MooreGraph.cpp.obj.d
+  FLAGS = -g -fdiagnostics-color=always -std=gnu++1z
+  OBJECT_DIR = CMakeFiles\MealyMoore.dir
+  OBJECT_FILE_DIR = CMakeFiles\MealyMoore.dir\MMV3
 
 
 # =============================================================================
@@ -69,7 +75,7 @@ build CMakeFiles/MealyMoore.dir/Milly-Murr_V2.cpp.obj: CXX_COMPILER__MealyMoore_
 #############################################
 # Link the executable MealyMoore.exe
 
-build MealyMoore.exe: CXX_EXECUTABLE_LINKER__MealyMoore_Debug CMakeFiles/MealyMoore.dir/main.cpp.obj CMakeFiles/MealyMoore.dir/Milly-Murr_V2.cpp.obj
+build MealyMoore.exe: CXX_EXECUTABLE_LINKER__MealyMoore_Debug CMakeFiles/MealyMoore.dir/main.cpp.obj CMakeFiles/MealyMoore.dir/MMV3/MealyGraph.cpp.obj CMakeFiles/MealyMoore.dir/MMV3/MooreGraph.cpp.obj
   FLAGS = -g
   LINK_LIBRARIES = -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32
   OBJECT_DIR = CMakeFiles\MealyMoore.dir

@@ -3,4 +3,6 @@ project(MealyMoore)
 
 set(CMAKE_CXX_STANDARD 20)
 
-add_executable(MealyMoore main.cpp Milly-Murr_V2.cpp)
+add_executable(MealyMoore main.cpp
+        MMV3/MealyGraph.cpp
+        MMV3/MooreGraph.cpp)
