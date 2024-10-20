@@ -7,6 +7,8 @@
 #include <map>
 #include <set>
 
+const bool TEST = true;
+
 class MealyGraph;
 
 class MooreTransition {

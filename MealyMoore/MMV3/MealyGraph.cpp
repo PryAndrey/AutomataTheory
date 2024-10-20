@@ -80,10 +80,9 @@ MooreGraph MealyGraph::ToMooreGraph() {
     std::map<std::string, int> statesMap; // state/oytS -> index
     std::map<std::string, std::set<int>> fromMap; // state -> [indexes]
     std::map<std::string, std::string> newNameConvert;
+    std::vector<MooreState> startStates;
     {
-        char newSymbol = 'q';
-        bool includeFirst = false;
-        int i = 0;
+        std::set<std::string> statesSet;
         for (auto &state: m_states) {
             for (auto &transitionIndex: state.second) {
                 auto transition = m_transitions[transitionIndex];
@@ -91,29 +90,37 @@ MooreGraph MealyGraph::ToMooreGraph() {
                     continue;
                 }
                 std::string mooreStateName = m_states[transition.m_to].first + "/" + transition.m_outSymbol;
-                auto it = statesMap.find(mooreStateName);
-                if (it == statesMap.end()) {
-                    if (transition.m_to == 0) {
-                        includeFirst = true;
-                    }
+                auto it = statesSet.find(mooreStateName);
+                if (it == statesSet.end()) {
                     MooreState newState(mooreStateName, transition.m_outSymbol);
-                    statesMap[mooreStateName] = newGraph.m_states.size();
-                    newNameConvert[mooreStateName] = newSymbol + std::to_string(i++);
-                    newGraph.m_states.push_back(newState);
+                    statesSet.insert(mooreStateName);
+                    if (transition.m_to == 0) {
+                        startStates.push_back(newState);
+                    } else {
+                        newGraph.m_states.push_back(newState);
+                    }
                 }
             }
         }
 
-        // Если в 1 ничего не ведет
-        if (!includeFirst) {
+        // Заполняем 1-ыми вершинами
+        if (startStates.empty()) {
             MooreState newState(m_states[0].first, "");
             newGraph.m_states.insert(newGraph.m_states.cbegin(), newState);
+        } else {
+            newGraph.m_states.insert(newGraph.m_states.begin(), startStates.begin(), startStates.end());
+        }
+
+        int i = 0;
+        char newSymbol = 'q';
+        for (auto &state: newGraph.m_states) {
+            statesMap[state.state] = i;
+            newNameConvert[state.state] = newSymbol + std::to_string(i++);
         }
 
         for (auto &state: newGraph.m_states) {
             fromMap[SplitMealyState(state.state).first].insert(statesMap[state.state]);
         }
-
     }
 
     // Добавляем переходы
@@ -126,16 +133,6 @@ MooreGraph MealyGraph::ToMooreGraph() {
             }
             continue;
         }
-        /*
-        std::string mooreStateName = m_states[transition.m_to].first + "/" + transition.m_outSymbol;
-        for (int j = 0; j < newGraph.m_states.size(); ++j) {
-            if (SplitMealyState(newGraph.m_states[j].state).first == m_states[transition.m_from].first) {
-                // Получаем индекс в новых состояниях
-                MooreTransition mooreTransition(j, statesMap[mooreStateName], transition.m_inSymbol);
-                newGraph.m_transitions.push_back(mooreTransition);
-                newGraph.m_states[j].transitions.insert(newGraph.m_transitions.size() - 1);
-            }
-        }*/
         std::string mooreStateName = m_states[transition.m_to].first + "/" + transition.m_outSymbol;
         for (auto &newStateInd: fromMap[SplitMealyState(m_states[transition.m_from].first).first]) {
             MooreTransition mooreTransition(newStateInd, statesMap[mooreStateName], transition.m_inSymbol);
@@ -144,9 +141,10 @@ MooreGraph MealyGraph::ToMooreGraph() {
         }
 
     }
-
-    for (auto &state: newGraph.m_states) {
-        state.state = newNameConvert[state.state];
+    if (!TEST) {
+        for (auto &state: newGraph.m_states) {
+            state.state = newNameConvert[state.state];
+        }
     }
 
     return newGraph;
