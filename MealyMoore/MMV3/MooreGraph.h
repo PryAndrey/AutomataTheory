@@ -7,7 +7,7 @@
 #include <map>
 #include <set>
 
-const bool TEST = true;
+const bool TEST = false;
 
 class MealyGraph;
 
