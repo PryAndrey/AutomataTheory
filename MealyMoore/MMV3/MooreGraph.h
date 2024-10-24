@@ -45,5 +45,6 @@ public:
     void WriteToCSVFile(const std::string &filename);
 
 private:
+    void TrimStates();
     int FindStateByString(const std::string &state);
 };

@@ -32,6 +32,7 @@ public:
     void WriteToCSVFile(const std::string &filename);
 
 private:
+    void TrimStates();
     static std::pair<std::string, std::string> SplitMealyState(const std::string &input);
     int FindStateByString(const std::string &state);
 };

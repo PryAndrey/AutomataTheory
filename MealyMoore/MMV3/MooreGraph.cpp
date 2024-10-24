@@ -3,6 +3,8 @@
 #include <string>
 #include <fstream>
 #include <sstream>
+#include <queue>
+#include <utility>
 #include "MooreGraph.h"
 #include "MealyGraph.h"
 
@@ -56,6 +58,7 @@ void MooreGraph::FillGraphFromCSVFile(const std::string &fileName) {
     }
 
     file.close();
+    TrimStates();
 }
 
 int MooreGraph::FindStateByString(const std::string &state) {
@@ -113,4 +116,60 @@ void MooreGraph::WriteToCSVFile(const std::string &filename) {
     }
 
     file.close();
+}
+
+void MooreGraph::TrimStates() {
+    struct QueueContainer {
+
+        QueueContainer(std::string state, int index, std::string outSymbol, std::set<int> transitions)
+                : state(std::move(state)), index(index), outSymbol(std::move(outSymbol)),
+                  transitions(std::move(transitions)) {}
+
+        std::string state;
+        std::string outSymbol;
+        int index;
+        std::set<int> transitions;
+    };
+
+    std::queue<QueueContainer> stateQueue; // очередь для обхода графа
+    std::map<std::string, int> visitedStates; // Посещенные вершины
+
+    stateQueue.emplace(m_states[0].state, 0, m_states[0].outSymbol, m_states[0].transitions);
+    int i = 0;
+    while (!stateQueue.empty()) {
+        auto stateInfo = stateQueue.front();
+        stateQueue.pop();
+        if (visitedStates.find(stateInfo.state) == visitedStates.end()) {
+            for (auto &transitionIndex: stateInfo.transitions) {
+                auto transition = m_transitions[transitionIndex];
+                auto stateTo = m_states[transition.m_to];
+                if (stateInfo.state != stateTo.state && visitedStates.find(stateTo.state) == visitedStates.end()) {
+                    stateQueue.emplace(stateTo.state, transition.m_to, stateTo.outSymbol, stateTo.transitions);
+                }
+            }
+        }
+        visitedStates[stateInfo.state] = stateInfo.index;
+    }
+
+    std::vector<MooreTransition> newTransitions;
+    std::vector<MooreState> newStates;
+    std::map<std::string, int> newStatesMap;
+    newStates.reserve(visitedStates.size());
+    for (auto &[stateName, index]: visitedStates) {
+        std::set<int> tempTransition;
+        for (auto &transitionIndex: m_states[index].transitions) {
+            auto transition = m_transitions[transitionIndex];
+            newTransitions.emplace_back(newStates.size(), transition.m_to, transition.m_inSymbol);
+            tempTransition.insert(newTransitions.size() - 1);
+        }
+        newStatesMap[m_states[index].state] = newStates.size();
+        newStates.emplace_back(m_states[index].state, m_states[index].outSymbol, tempTransition);
+    }
+
+    for (auto &transition: newTransitions) {
+        transition.m_to = newStatesMap[m_states[transition.m_to].state];
+    }
+
+    m_states = newStates;
+    m_transitions = newTransitions;
 }

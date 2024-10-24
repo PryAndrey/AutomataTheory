@@ -5,6 +5,8 @@
 #include <set>
 #include <fstream>
 #include <sstream>
+#include <queue>
+#include <iostream>
 #include "MealyGraph.h"
 #include "MooreGraph.h"
 
@@ -53,6 +55,7 @@ void MealyGraph::FillGraphFromCSVFile(const std::string &fileName) {
     }
 
     file.close();
+    TrimStates();
 }
 
 std::pair<std::string, std::string> MealyGraph::SplitMealyState(const std::string &input) {
@@ -179,4 +182,59 @@ void MealyGraph::WriteToCSVFile(const std::string &filename) {
     }
 
     file.close();
+}
+
+void MealyGraph::TrimStates() {
+    struct QueueContainer {
+
+        QueueContainer(std::string state, int index, std::set<int> transitions)
+                : state(std::move(state)), index(index), transitions(std::move(transitions)) {}
+
+        std::string state;
+        int index;
+        std::set<int> transitions;
+    };
+
+    std::queue<QueueContainer> stateQueue; // очередь для обхода графа
+    std::map<std::string, int> visitedStates; // Посещенные вершины
+
+    stateQueue.emplace(m_states[0].first, 0, m_states[0].second);
+    int i = 0;
+    while (!stateQueue.empty()) {
+        auto stateInfo = stateQueue.front();
+        stateQueue.pop();
+        if (visitedStates.find(stateInfo.state) == visitedStates.end()) {
+            for (auto &transitionIndex: stateInfo.transitions) {
+                auto transition = m_transitions[transitionIndex];
+                auto stateTo = m_states[transition.m_to];
+                if (stateInfo.state != stateTo.first && visitedStates.find(stateTo.first) == visitedStates.end()) {
+                    stateQueue.emplace(stateTo.first, transition.m_to, stateTo.second);
+                }
+            }
+        }
+        visitedStates[stateInfo.state] = stateInfo.index;
+    }
+
+    std::vector<MealyTransition> newTransitions;
+    std::vector<std::pair<std::string, std::set<int>>> newStates;
+    std::map<std::string, int> newStatesMap;
+    newStates.reserve(visitedStates.size());
+    for (auto &[stateName, index]: visitedStates) {
+        std::set<int> tempTransition;
+        for (auto &transitionIndex: m_states[index].second) {
+            auto transition = m_transitions[transitionIndex];
+            newTransitions.emplace_back(newStates.size(), transition.m_to, transition.m_inSymbol,
+                                        transition.m_outSymbol);
+            tempTransition.insert(newTransitions.size() - 1);
+        }
+        newStatesMap[m_states[index].first] = newStates.size();
+        newStates.emplace_back(m_states[index].first, tempTransition);
+    }
+
+    for (auto &transition: newTransitions) {
+        transition.m_to = newStatesMap[m_states[transition.m_to].first];
+    }
+
+    m_states = newStates;
+    m_transitions = newTransitions;
 }
