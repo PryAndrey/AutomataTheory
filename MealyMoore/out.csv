@@ -1,4 +1,24 @@
-;R0;R1;R3;R4;R5;R7
-b1;R0/0;R0/0;R1/1;R1/1;R0/0;R7/2
-b2;R4/1;R4/1;R3/0;R3/0;R4/1;R4/1
-b3;R7/2;R7/2;R4/1;R1/1;R7/2;R5/0
+// Mealy Machine
+digraph {
+	x8 [label=x8]
+	x2 [label=x2]
+	x4 [label=x4]
+	x5 [label=x5]
+	x6 [label=x6]
+	x7 [label=x7]
+	x9 [label=x9]
+	x8 -> x8 [label="z1/w5"]
+	x2 -> x6 [label="z1/w8"]
+	x4 -> x7 [label="z1/w6"]
+	x5 -> x7 [label="z1/w4"]
+	x6 -> x7 [label="z1/w1"]
+	x7 -> x2 [label="z1/w2"]
+	x9 -> x6 [label="z1/w4"]
+	x8 -> x9 [label="z2/w4"]
+	x2 -> x4 [label="z2/w1"]
+	x4 -> x2 [label="z2/w5"]
+	x5 -> x7 [label="z2/w5"]
+	x6 -> x5 [label="z2/w4"]
+	x7 -> x4 [label="z2/w5"]
+	x9 -> x5 [label="z2/w7"]
+}

@@ -199,7 +199,6 @@ void MealyGraph::TrimStates() {
     std::map<std::string, int> visitedStates; // Посещенные вершины
 
     stateQueue.emplace(m_states[0].first, 0, m_states[0].second);
-    int i = 0;
     while (!stateQueue.empty()) {
         auto stateInfo = stateQueue.front();
         stateQueue.pop();
@@ -215,21 +214,40 @@ void MealyGraph::TrimStates() {
         visitedStates[stateInfo.state] = stateInfo.index;
     }
 
+    std::pair<std::string, int> startState;
     std::vector<MealyTransition> newTransitions;
     std::vector<std::pair<std::string, std::set<int>>> newStates;
     std::map<std::string, int> newStatesMap;
     newStates.reserve(visitedStates.size());
     for (auto &[stateName, index]: visitedStates) {
         std::set<int> tempTransition;
+
+        if (index == 0) {
+            startState = std::pair(stateName, index);
+            continue;
+        }
         for (auto &transitionIndex: m_states[index].second) {
             auto transition = m_transitions[transitionIndex];
-            newTransitions.emplace_back(newStates.size(), transition.m_to, transition.m_inSymbol,
+            newTransitions.emplace_back(newStates.size()+1, transition.m_to, transition.m_inSymbol,
                                         transition.m_outSymbol);
             tempTransition.insert(newTransitions.size() - 1);
         }
-        newStatesMap[m_states[index].first] = newStates.size();
+        newStatesMap[m_states[index].first] = newStates.size()+1;
         newStates.emplace_back(m_states[index].first, tempTransition);
     }
+
+    // Ставим 1 вершину
+    std::set<int> tempTransition;
+    for (auto &transitionIndex: m_states[startState.second].second) {
+        auto transition = m_transitions[transitionIndex];
+        newTransitions.emplace_back(0, transition.m_to, transition.m_inSymbol,
+                                    transition.m_outSymbol);
+        tempTransition.insert(newTransitions.size() - 1);
+    }
+    newStatesMap[m_states[startState.second].first] = 0;
+    newStates.insert(newStates.cbegin(),
+                     std::pair<std::string, std::set<int>>(m_states[startState.second].first, tempTransition));
+
 
     for (auto &transition: newTransitions) {
         transition.m_to = newStatesMap[m_states[transition.m_to].first];
