@@ -220,19 +220,18 @@ void MealyGraph::TrimStates() {
     std::map<std::string, int> newStatesMap;
     newStates.reserve(visitedStates.size());
     for (auto &[stateName, index]: visitedStates) {
-        std::set<int> tempTransition;
-
         if (index == 0) {
             startState = std::pair(stateName, index);
             continue;
         }
+        std::set<int> tempTransition;
         for (auto &transitionIndex: m_states[index].second) {
             auto transition = m_transitions[transitionIndex];
-            newTransitions.emplace_back(newStates.size()+1, transition.m_to, transition.m_inSymbol,
+            newTransitions.emplace_back(newStates.size() + 1, transition.m_to, transition.m_inSymbol,
                                         transition.m_outSymbol);
             tempTransition.insert(newTransitions.size() - 1);
         }
-        newStatesMap[m_states[index].first] = newStates.size()+1;
+        newStatesMap[m_states[index].first] = newStates.size() + 1;
         newStates.emplace_back(m_states[index].first, tempTransition);
     }
 

@@ -135,7 +135,6 @@ void MooreGraph::TrimStates() {
     std::map<std::string, int> visitedStates; // Посещенные вершины
 
     stateQueue.emplace(m_states[0].state, 0, m_states[0].outSymbol, m_states[0].transitions);
-    int i = 0;
     while (!stateQueue.empty()) {
         auto stateInfo = stateQueue.front();
         stateQueue.pop();
@@ -151,20 +150,37 @@ void MooreGraph::TrimStates() {
         visitedStates[stateInfo.state] = stateInfo.index;
     }
 
+    std::pair<std::string, int> startState;
     std::vector<MooreTransition> newTransitions;
     std::vector<MooreState> newStates;
     std::map<std::string, int> newStatesMap;
     newStates.reserve(visitedStates.size());
     for (auto &[stateName, index]: visitedStates) {
+        if (index == 0) {
+            startState = std::pair(stateName, index);
+            continue;
+        }
         std::set<int> tempTransition;
         for (auto &transitionIndex: m_states[index].transitions) {
             auto transition = m_transitions[transitionIndex];
-            newTransitions.emplace_back(newStates.size(), transition.m_to, transition.m_inSymbol);
+            newTransitions.emplace_back(newStates.size() + 1, transition.m_to, transition.m_inSymbol);
             tempTransition.insert(newTransitions.size() - 1);
         }
-        newStatesMap[m_states[index].state] = newStates.size();
+        newStatesMap[m_states[index].state] = newStates.size() + 1;
         newStates.emplace_back(m_states[index].state, m_states[index].outSymbol, tempTransition);
     }
+
+    // Ставим 1 вершину
+    std::set<int> tempTransition;
+    for (auto &transitionIndex: m_states[startState.second].transitions) {
+        auto transition = m_transitions[transitionIndex];
+        newTransitions.emplace_back(0, transition.m_to, transition.m_inSymbol);
+        tempTransition.insert(newTransitions.size() - 1);
+    }
+    newStatesMap[m_states[startState.second].state] = 0;
+    newStates.insert(newStates.cbegin(),
+                     MooreState(m_states[startState.second].state, m_states[startState.second].outSymbol,
+                                tempTransition));
 
     for (auto &transition: newTransitions) {
         transition.m_to = newStatesMap[m_states[transition.m_to].state];
