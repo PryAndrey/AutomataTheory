@@ -40,7 +40,7 @@ int main(int argc, char *argv[]) {
             auto TP3 = std::chrono::high_resolution_clock::now();
             std::cout << "Convert: " << std::chrono::duration<double>(TP3 - TP2).count() << std::endl;
 
-            mealyGraph.WriteToCSVFile(outputFile);
+            mooreGraph.WriteToCSVFile(outputFile);
             auto TP4 = std::chrono::high_resolution_clock::now();
             std::cout << "Write: " << std::chrono::duration<double>(TP4 - TP3).count() << std::endl;
         } catch (std::exception &e) {
