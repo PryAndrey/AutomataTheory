@@ -189,3 +189,7 @@ void MooreGraph::TrimStates() {
     m_states = newStates;
     m_transitions = newTransitions;
 }
+
+void MooreGraph::Minimize() {
+
+}

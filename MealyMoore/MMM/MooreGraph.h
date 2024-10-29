@@ -43,6 +43,7 @@ public:
     void FillGraphFromCSVFile(const std::string &fileName);
     MealyGraph ToMealyGraph();
     void WriteToCSVFile(const std::string &filename);
+    void Minimize();
 
 private:
     void TrimStates();
