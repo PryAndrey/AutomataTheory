@@ -28,24 +28,20 @@ int main(int argc, char *argv[]) {
 
     std::cout << command << inputFile << outputFile << std::endl;
 
-    if (command == "mealy") {
-        try {
+    try {
+        if (command == "mealy") {
             MealyGraph mealyGraph;
             mealyGraph.FillGraphFromCSVFile(inputFile);
             mealyGraph.Minimize();
             mealyGraph.WriteToCSVFile(outputFile);
-        } catch (std::exception &e) {
-            std::cout << e.what();
-        }
-    } else if (command == "moore") {
-        try {
+        } else if (command == "moore") {
             MooreGraph mooreGraph;
             mooreGraph.FillGraphFromCSVFile(inputFile);
             mooreGraph.Minimize();
             mooreGraph.WriteToCSVFile(outputFile);
-        } catch (std::exception &e) {
-            std::cout << e.what();
         }
+    } catch (std::exception &e) {
+        std::cout << e.what();
     }
     return 0;
 }
