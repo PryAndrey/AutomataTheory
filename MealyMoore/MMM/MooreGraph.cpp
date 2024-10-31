@@ -191,5 +191,126 @@ void MooreGraph::TrimStates() {
 }
 
 void MooreGraph::Minimize() {
+    TrimStates();
 
+    //Разбиение
+    std::map<std::string, std::map<std::string, std::set<int>>> stateMap;
+    {
+        //Заполняет stateMap 1 раз
+        for (int i = 0; i < m_states.size(); ++i) {
+            auto &state = m_states[i];
+            stateMap[state.outSymbol][state.state].insert(i);
+        }
+
+        // Заполняем stateConverter (состояние -> {индекс, новое имя})
+        std::map<std::string, std::pair<int, std::string>> stateConverter;
+        char newState = 'A';
+        int newStateIndex = 0;
+        for (auto &[outCombination, stateGroups]: stateMap) {
+            for (auto &[state, stateIndexes]: stateGroups) {
+                for (auto &stateInd: stateIndexes) {
+                    stateConverter[state] = {stateInd, newState + std::to_string(newStateIndex)};
+                }
+            }
+            newStateIndex++;
+        }
+        //Разбиваем на группы по переходам
+        std::map<std::string, std::map<std::string, std::set<int>>> stateMapTemp;
+        std::map<std::string, std::pair<int, std::string>> stateConverterTemp;
+        newState++;
+        while (UniqueNames(stateMap) != UniqueNames(stateMapTemp)) {
+            stateConverterTemp = stateConverter;
+            stateConverter.clear();
+            stateMapTemp = stateMap;
+            stateMap.clear();
+            newStateIndex = 0;
+
+            for (auto &[outCombination, stateGroups]: stateMapTemp) {
+                std::map<std::string, std::string> helpMap;
+                for (auto &[state, stateIndexes]: stateGroups) {
+                    for (auto &stateIndex: stateIndexes) {
+                        std::string newStateTransition;
+                        for (auto &transitionInd: m_states[stateIndex].transitions) {
+                            newStateTransition += stateConverterTemp[m_states[m_transitions[transitionInd].m_to].state].second;
+                        }
+                        auto it = helpMap.find(newStateTransition);
+                        if (it == helpMap.end()) {
+                            std::string newName = newState + std::to_string(newStateIndex++);
+                            helpMap[newStateTransition] = newName;
+                            stateConverter[m_states[stateIndex].state] = {stateIndex, newName};
+                            stateMap[outCombination][newName].insert(stateIndex);
+                        } else {
+                            stateConverter[state] = {stateIndex, helpMap[it->first]};
+                            stateMap[outCombination][helpMap[it->first]].insert(stateIndex);
+                        }
+                    }
+                }
+            }
+            newState++;
+        }
+    }
+
+    // Склеивание
+    {
+        // Создаем map (состояние -> имя группы)
+        std::map<int, std::string> toNewStatesMap;
+        for (auto &[outCombination, stateGroups]: stateMap) {
+            for (auto &[groupName, statesSet]: stateGroups) {
+                for (auto &stateIndex: statesSet) {
+                    toNewStatesMap[stateIndex] = groupName;
+                }
+            }
+        }
+
+        // Заполняем новый массив состояний новыми вершинами
+        std::vector<MooreState> newStates;
+        newStates.emplace_back(toNewStatesMap[0], m_states[0].outSymbol, m_states[0].transitions);
+        std::vector<MooreTransition> newTransitions;
+        std::set<std::string> replacedNames;
+        for (auto &[outSymbolComb, newNamesMap]: stateMap) {
+            for (auto &[groupName, statesSet]: newNamesMap) {
+                if (statesSet.find(0) != statesSet.end()) {
+                    continue;
+                }
+                if (replacedNames.find(groupName) != replacedNames.end()) {
+                    continue;
+                } else {
+                    newStates.emplace_back(groupName, m_states[*(statesSet.begin())].outSymbol,
+                                           m_states[*(statesSet.begin())].transitions);
+                    replacedNames.insert(groupName);
+                }
+            }
+        }
+
+        // К новым состояниям заполняем новые переходы
+        int from = 0;
+        for (auto &[groupName, outSymbol, transitionsSet]: newStates) {
+            std::set<int> newTransitionsSet;
+            for (auto &transitionInd: transitionsSet) {
+                auto transition = m_transitions[transitionInd];
+                int to = -1;
+                std::string toStateString = toNewStatesMap[transition.m_to];
+                for (int i = 0; i < newStates.size(); ++i) {
+                    if (toStateString == newStates[i].state) {
+                        to = i;
+                        break;
+                    }
+                }
+                newTransitions.emplace_back(from, to, transition.m_inSymbol);
+                newTransitionsSet.insert(newTransitions.size() - 1);
+            }
+            transitionsSet = newTransitionsSet;
+            from++;
+        }
+        m_states = newStates;
+        m_transitions = newTransitions;
+    }
+}
+
+size_t MooreGraph::UniqueNames(std::map<std::string, std::map<std::string, std::set<int>>> &temp) {
+    size_t size = 0;
+    for (auto &[outCombination, stateMap]: temp) {
+        size += stateMap.size();
+    }
+    return size;
 }

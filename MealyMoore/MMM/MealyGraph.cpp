@@ -259,8 +259,10 @@ void MealyGraph::TrimStates() {
 void MealyGraph::Minimize() {
     TrimStates();
 
+    //Разбиение
     std::map<std::string, std::map<std::string, std::set<int>>> stateMap;
     {
+        //Заполняет stateMap 1 раз
         for (int i = 0; i < m_states.size(); ++i) {
             auto &state = m_states[i];
             std::string outCombination;
@@ -275,8 +277,9 @@ void MealyGraph::Minimize() {
             stateMap[outCombination][state.first].insert(i);
         }
 
-        std::map<std::string, std::pair<int, std::string>> stateConverter;
 
+        // Заполняем stateConverter (состояние -> {индекс, новое имя})
+        std::map<std::string, std::pair<int, std::string>> stateConverter;
         char newState = 'A';
         int newStateIndex = 0;
         for (auto &[outCombination, stateGroups]: stateMap) {
@@ -287,6 +290,7 @@ void MealyGraph::Minimize() {
             }
             newStateIndex++;
         }
+        //Разбиваем на группы по переходам
         std::map<std::string, std::map<std::string, std::set<int>>> stateMapTemp;
         std::map<std::string, std::pair<int, std::string>> stateConverterTemp;
         newState++;
@@ -321,8 +325,10 @@ void MealyGraph::Minimize() {
             newState++;
         }
     }
+
+    // Склеивание
     {
-        // На этом моменте дошли до полного разбиения -> осталось склеить
+        // Создаем map (состояние -> имя группы)
         std::map<int, std::string> toNewStatesMap;
         for (auto &[outCombination, stateGroups]: stateMap) {
             for (auto &[groupName, statesSet]: stateGroups) {
@@ -332,7 +338,7 @@ void MealyGraph::Minimize() {
             }
         }
 
-///
+        // Заполняем новый массив состояний новыми вершинами
         std::vector<std::pair<std::string, std::set<int>>> newStates;
         newStates.emplace_back(toNewStatesMap[0], m_states[0].second);
         std::vector<MealyTransition> newTransitions;
@@ -350,6 +356,8 @@ void MealyGraph::Minimize() {
                 }
             }
         }
+
+        // К новым состояниям заполняем новые переходы
         int from = 0;
         for (auto &[groupName, transitionsSet]: newStates) {
             std::set<int> newTransitionsSet;
@@ -373,7 +381,6 @@ void MealyGraph::Minimize() {
         m_states = newStates;
         m_transitions = newTransitions;
     }
-    ///
 }
 
 size_t MealyGraph::UniqueNames(std::map<std::string, std::map<std::string, std::set<int>>> &temp) {

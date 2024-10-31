@@ -29,6 +29,7 @@ struct MooreState {
                                                                                                       nTransitions)) {}
 
     MooreState() = default;
+
     std::string state;
     std::string outSymbol;
     std::set<int> transitions;
@@ -41,11 +42,17 @@ public:
     std::vector<MooreTransition> m_transitions;
 
     void FillGraphFromCSVFile(const std::string &fileName);
+
     MealyGraph ToMealyGraph();
+
     void WriteToCSVFile(const std::string &filename);
+
     void Minimize();
 
 private:
+    size_t UniqueNames(std::map<std::string, std::map<std::string, std::set<int>>> &temp);
+
     void TrimStates();
+
     int FindStateByString(const std::string &state);
 };
