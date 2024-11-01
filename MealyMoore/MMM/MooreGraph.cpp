@@ -5,6 +5,7 @@
 #include <sstream>
 #include <queue>
 #include <utility>
+#include <iostream>
 #include "MooreGraph.h"
 #include "MealyGraph.h"
 
@@ -240,7 +241,7 @@ void MooreGraph::Minimize() {
                             stateConverter[m_states[stateIndex].state] = {stateIndex, newName};
                             stateMap[outCombination][newName].insert(stateIndex);
                         } else {
-                            stateConverter[state] = {stateIndex, helpMap[it->first]};
+                            stateConverter[m_states[stateIndex].state] = {stateIndex, helpMap[it->first]};
                             stateMap[outCombination][helpMap[it->first]].insert(stateIndex);
                         }
                     }
@@ -301,6 +302,9 @@ void MooreGraph::Minimize() {
             }
             transitionsSet = newTransitionsSet;
             from++;
+        }
+        for (auto &ind: toNewStatesMap) {
+            std::cout << m_states[ind.first].state << "->" << ind.second << std::endl;
         }
         m_states = newStates;
         m_transitions = newTransitions;

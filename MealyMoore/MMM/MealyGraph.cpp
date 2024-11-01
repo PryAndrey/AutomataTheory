@@ -316,7 +316,7 @@ void MealyGraph::Minimize() {
                             stateConverter[m_states[stateIndex].first] = {stateIndex, newName};
                             stateMap[outCombination][newName].insert(stateIndex);
                         } else {
-                            stateConverter[state] = {stateIndex, helpMap[it->first]};
+                            stateConverter[m_states[stateIndex].first] = {stateIndex, helpMap[it->first]};
                             stateMap[outCombination][helpMap[it->first]].insert(stateIndex);
                         }
                     }
