@@ -43,9 +43,6 @@ GrammarReader::Pairs GrammarReader::ParseGrammarTransition(const std::string &gr
 }
 
 void GrammarReader::ReadGrammarRules(Pairs &grammarVector) {
-    if (m_type == GrammarType::N) {
-        throw std::runtime_error("Useless grammar rule");
-    }
     int stateIndex = 0;
     std::unordered_map<std::string, int> stateMap;
     for (const auto &[grammarKey, grammarTransition]: grammarVector) {
@@ -65,10 +62,10 @@ void GrammarReader::ReadGrammarRules(Pairs &grammarVector) {
                 m_states.emplace_back(to);
             }
             int toInd = !to.empty() ? stateMap[to] : -1;
-            if (m_type == GrammarType::RG) {
+            if (m_type == GrammarType::RG || m_type == GrammarType::N) {
                 m_transitions.emplace_back(stateMap[grammarKey], toInd, in, toInd == -1);
                 m_states[stateMap[grammarKey]].transitions.insert(m_transitions.size() - 1);
-            } else {
+            } else if (m_type == GrammarType::LG) {
                 m_transitions.emplace_back(toInd, stateMap[grammarKey], in, toInd == -1);
                 if (toInd == -1)
                     m_finishState.transitions.insert(m_transitions.size() - 1);
@@ -119,7 +116,7 @@ void GrammarReader::ReadFile(const std::string &fileName) {
         throw std::runtime_error("Could not open file: " + fileName);
     }
 
-    Pairs grammarMap;
+    Pairs grammarVector;
     std::string regularExpression;
     std::string line;
     while (std::getline(inFile, line)) {
@@ -132,12 +129,12 @@ void GrammarReader::ReadFile(const std::string &fileName) {
             continue;
         }
         regularExpression = std::regex_replace(regularExpression, std::regex("\\s+"), " ");
-        RegexRead(grammarMap, regularExpression);
+        RegexRead(grammarVector, regularExpression);
         regularExpression = line;
     }
     regularExpression = std::regex_replace(regularExpression, std::regex("\\s+"), " ");
-    RegexRead(grammarMap, regularExpression);
-    ReadGrammarRules(grammarMap);
+    RegexRead(grammarVector, regularExpression);
+    ReadGrammarRules(grammarVector);
 };
 
 void GrammarReader::WriteMooreToFile(const std::string &fileName) {
@@ -160,15 +157,15 @@ void GrammarReader::WriteMooreToFile(const std::string &fileName) {
     file << ";" << "F" << std::endl;
 
     /// States names
-    if (m_type == GrammarType::RG) {
+    if (m_type == GrammarType::RG || m_type == GrammarType::N) {
         for (auto &state: m_states) {
-            file << ";" <<  m_stateConvert[state.name];
+            file << ";" << m_stateConvert[state.name];
         }
         file << ";" << m_finishState.name << std::endl;
     } else {
         file << ";" << m_finishState.name;
         for (auto state = m_states.rbegin(); state != m_states.rend(); ++state) {
-            file << ";" <<  m_stateConvert[state->name];
+            file << ";" << m_stateConvert[state->name];
         }
         file << std::endl;
     }
@@ -181,7 +178,7 @@ void GrammarReader::WriteMooreToFile(const std::string &fileName) {
                 if (m_transitions[transition].in == inSymbol) {
                     const std::string toState = m_transitions[transition].to == -1
                                                 ? ""
-                                                :  m_stateConvert[m_states[m_transitions[transition].to].name];
+                                                : m_stateConvert[m_states[m_transitions[transition].to].name];
                     finishEmptyTransitions += (finishEmptyTransitions.empty() ? "" : ",") + toState;
                 }
             }
@@ -201,7 +198,7 @@ void GrammarReader::WriteMooreToFile(const std::string &fileName) {
         };
 
         // Write transitions
-        if (m_type == GrammarType::RG) {
+        if (m_type == GrammarType::RG || m_type == GrammarType::N) {
             for (auto state: m_states) {
                 setTransitions(state);
             }
@@ -210,7 +207,7 @@ void GrammarReader::WriteMooreToFile(const std::string &fileName) {
                 setTransitions(*state);
             }
         }
-        if (m_type == GrammarType::RG) {
+        if (m_type == GrammarType::RG || m_type == GrammarType::N) {
             file << ";" << std::endl;
         } else
             file << std::endl;

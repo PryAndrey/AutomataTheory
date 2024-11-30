@@ -1,7 +1,7 @@
-<Hello> -> h <lol> |
-           k <ek> |
-           1 <23>
-<lol> -> 4 | h <lol>
-<23> -> 4 <madness> | 4 <23>
-<madness> -> ε <23>
-<ek> -> x | ε
+<Hello> -> <lol> h |
+           <ek> s |
+           <23> k
+<lol> -> ε | <lol> x
+<23> -> <madness> ε
+<madness> -> 2 | <23> k
+<ek> -> x
