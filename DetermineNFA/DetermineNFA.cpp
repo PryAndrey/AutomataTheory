@@ -20,8 +20,8 @@ void DetermineNFA::ReadFromCSVFile(const std::string &fileName) {
             std::string outSymbol, state;
             std::getline(ssOut, outSymbol, ';');
             std::getline(ssStates, state, ';');
-            while (std::getline(ssOut, outSymbol, ';')) {
-                std::getline(ssStates, state, ';');
+            while (std::getline(ssStates, state, ';')) {
+                std::getline(ssOut, outSymbol, ';');
                 if (!state.empty() && state != "\"\"" && outSymbol != "\"\"") {
                     m_states.emplace_back(state, outSymbol, std::set<int>());
                     m_statesMap[state] = m_states.size() - 1;
@@ -73,7 +73,7 @@ void DetermineNFA::FindChain() {
 
             for (const auto &transitionInd: state.transitions) {
                 auto &transition = m_transitions[transitionInd];
-                if (transition.m_inSymbol == "ε") {
+                if (transition.m_inSymbol == "ε" || transition.m_inSymbol == "Оµ") {
                     auto &toStatesSet = transition.m_to;
                     transitionSet.insert(toStatesSet.begin(), toStatesSet.end());
                     for (const auto &toStateInd: toStatesSet) {
