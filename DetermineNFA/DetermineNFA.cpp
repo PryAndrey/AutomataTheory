@@ -107,6 +107,13 @@ void DetermineNFA::ConvertToDFA() {
         // Новые состояния и ориентирование по состояниям
         newStates.emplace_back(stStart);
         newStates[0].transitions.clear();
+
+        for (int chainedStateInd: chStStart.chainedStates) {
+            if (!m_states[chainedStateInd].outSymbol.empty()) {
+                newStates[0].outSymbol = m_states[chainedStateInd].outSymbol;
+                break;
+            }
+        }
     }
 
     std::queue<MooreChain> stateQueue;
