@@ -69,7 +69,7 @@ public:
         FindChain();// Находим последовательности через ε
         m_inSymbols.erase(std::find(m_inSymbols.begin(), m_inSymbols.end(), "ε"));
         ConvertToDFA();
-        Minimize();
+//        Minimize();
     }
 
     void WriteToCSVFile(const std::string &filename);
