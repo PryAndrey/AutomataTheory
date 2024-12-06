@@ -125,7 +125,6 @@ void DetermineNFA::ConvertToDFA() {
         // Перебираем inSymbols(столбец)
         for (auto &inSymbol: m_inSymbols) {
             std::set<int> toNewStateByInSymbol; // Все переходы по вх символу
-            std::string outSymbol;
             // Перебираем, связанные с основным, состояния
             for (int chainedStateInd: chState.chainedStates) {
                 // Перебираем переходы состояний через set(для отсутствия повторений - q1q2 и q2q1 - одинаковы)
@@ -134,9 +133,6 @@ void DetermineNFA::ConvertToDFA() {
                     if (transition.m_inSymbol == inSymbol) {
                         toNewStateByInSymbol.insert(transition.m_to.begin(), transition.m_to.end());
                     }
-                }
-                if (outSymbol.empty()) {
-                    outSymbol = m_states[chainedStateInd].outSymbol;
                 }
             }
             if (toNewStateByInSymbol.empty()) {
@@ -166,6 +162,13 @@ void DetermineNFA::ConvertToDFA() {
             }
 
             newStates[chState.stateInd].transitions.insert(newTransitions.size());
+
+            std::string outSymbol;
+            for (int stateInd: toStates) {
+                if (outSymbol.empty()) {
+                    outSymbol = m_states[stateInd].outSymbol;
+                }
+            }
 
             newStates.emplace_back(newToStateName, outSymbol);
             newTransitions.emplace_back(chState.stateInd, std::set<int>{(int) newStates.size() - 1}, inSymbol);
