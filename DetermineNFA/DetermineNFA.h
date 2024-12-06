@@ -71,7 +71,24 @@ public:
         if (it != m_inSymbols.end())
             m_inSymbols.erase(it);
         ConvertToDFA();
+        TrimInSymbols();
 //        Minimize();
+    }
+
+    void TrimInSymbols() {
+        for (int i = 0; i < m_inSymbols.size(); ++i) {
+            bool find = false;
+            for (auto & m_transition : m_transitions) {
+                if (m_transition.m_inSymbol == m_inSymbols[i]) {
+                    find = true;
+                    break;
+                }
+            }
+            if (!find) {
+                m_inSymbols.erase(m_inSymbols.begin() + i);
+                i--;
+            }
+        }
     }
 
     void WriteToCSVFile(const std::string &filename);
