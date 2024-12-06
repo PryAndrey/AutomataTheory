@@ -67,7 +67,9 @@ public:
 
     void ToDFA() {
         FindChain();// Находим последовательности через ε
-        m_inSymbols.erase(std::find(m_inSymbols.begin(), m_inSymbols.end(), "ε"));
+        auto it = std::find(m_inSymbols.begin(), m_inSymbols.end(), "ε");
+        if (it != m_inSymbols.end())
+            m_inSymbols.erase(it);
         ConvertToDFA();
 //        Minimize();
     }
