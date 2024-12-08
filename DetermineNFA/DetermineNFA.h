@@ -56,7 +56,7 @@ public:
     std::vector<std::string> m_inSymbols;
     std::vector<MooreState> m_states;
     std::unordered_map<std::string, int> m_statesMap;
-    std::vector<MooreChain> m_chainedStates;
+    std::map<std::string, MooreChain> m_chainedStates;
     std::vector<MooreTransition> m_transitions;
 
     void ReadFromCSVFile(const std::string &fileName);
@@ -67,18 +67,28 @@ public:
 
     void ToDFA() {
         FindChain();// Находим последовательности через ε
+
         auto it = std::find(m_inSymbols.begin(), m_inSymbols.end(), "ε");
         if (it != m_inSymbols.end())
             m_inSymbols.erase(it);
+        it = std::find(m_inSymbols.begin(), m_inSymbols.end(), "e");
+        if (it != m_inSymbols.end())
+            m_inSymbols.erase(it);
+        it = std::find(m_inSymbols.begin(), m_inSymbols.end(), "E");
+        if (it != m_inSymbols.end())
+            m_inSymbols.erase(it);
+        it = std::find(m_inSymbols.begin(), m_inSymbols.end(), "Оµ");
+        if (it != m_inSymbols.end())
+            m_inSymbols.erase(it);
+
         ConvertToDFA();
         TrimInSymbols();
-//        Minimize();
     }
 
     void TrimInSymbols() {
         for (int i = 0; i < m_inSymbols.size(); ++i) {
             bool find = false;
-            for (auto & m_transition : m_transitions) {
+            for (auto &m_transition: m_transitions) {
                 if (m_transition.m_inSymbol == m_inSymbols[i]) {
                     find = true;
                     break;

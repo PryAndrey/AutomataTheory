@@ -73,7 +73,10 @@ void DetermineNFA::FindChain() {
 
             for (const auto &transitionInd: state.transitions) {
                 auto &transition = m_transitions[transitionInd];
-                if (transition.m_inSymbol == "ε" || transition.m_inSymbol == "Оµ") {
+                if (transition.m_inSymbol == "ε"
+                    || transition.m_inSymbol == "e"
+                    || transition.m_inSymbol == "E"
+                    || transition.m_inSymbol == "Оµ") {
                     auto &toStatesSet = transition.m_to;
                     transitionSet.insert(toStatesSet.begin(), toStatesSet.end());
                     for (const auto &toStateInd: toStatesSet) {
@@ -87,7 +90,7 @@ void DetermineNFA::FindChain() {
                 }
             }
         }
-        m_chainedStates.emplace_back(m_states[i].state, i, transitionSet);
+        m_chainedStates[m_states[i].state] = MooreChain(m_states[i].state, i, transitionSet);
     }
 }
 
@@ -96,31 +99,28 @@ void DetermineNFA::ConvertToDFA() {
     std::vector<MooreState> newStates;
     std::vector<MooreTransition> newTransitions;
 
-    {
-        auto chStStart = m_chainedStates[0];
-        auto stStart = m_states[chStStart.stateInd];
-
-        // Новые цепочки для очереди
-        newChainedStateMap[chStStart.state] = MooreChain(chStStart.state, 0, chStStart.chainedStates);
-
-        // Новые состояния и ориентирование по состояниям
-        newStates.emplace_back(stStart);
-        newStates[0].transitions.clear();
-
-        for (int chainedStateInd: chStStart.chainedStates) {
-            if (!m_states[chainedStateInd].outSymbol.empty()) {
-                newStates[0].outSymbol = m_states[chainedStateInd].outSymbol;
-                break;
-            }
-        }
-    }
+    newChainedStateMap[m_states[0].state] = m_chainedStates[m_states[0].state];
 
     std::queue<MooreChain> stateQueue;
-    stateQueue.emplace(newChainedStateMap[m_chainedStates[0].state]);
+    stateQueue.emplace(newChainedStateMap[m_states[0].state]);
 
+    int stateIndex = 1;
     while (!stateQueue.empty()) {
         MooreChain chState = stateQueue.front(); // Связанные состояния(строка)
         stateQueue.pop();
+
+        // Добавляем состояние (без переходов)
+        {
+            std::string outSymbol;
+            for (int stateInd: chState.chainedStates) {
+                outSymbol = m_states[stateInd].outSymbol;
+                if (!outSymbol.empty()) {
+                    break;
+                }
+            }
+
+            newStates.emplace_back(chState.state, outSymbol);
+        }
 
         // Перебираем inSymbols(столбец)
         for (auto &inSymbol: m_inSymbols) {
@@ -138,13 +138,15 @@ void DetermineNFA::ConvertToDFA() {
             if (toNewStateByInSymbol.empty()) {
                 continue;
             }
+            // На этом моменте имеем состояния в которые переходим по символу
 
-            // Имя состояния
+            // Имя нового состояния
             std::string newToStateName;
             for (int stateInd: toNewStateByInSymbol) {
                 newToStateName += m_states[stateInd].state;
             }
 
+            // Если такое состояние уже попадалось
             auto it = newChainedStateMap.find(newToStateName);
             if (it != newChainedStateMap.end()) {
                 newTransitions.emplace_back(chState.stateInd, std::set<int>{it->second.stateInd}, inSymbol);
@@ -152,34 +154,23 @@ void DetermineNFA::ConvertToDFA() {
                 continue;
             }
 
-            // Переходы из нового состояния по вх символу
+            // Формируем новые связанные состояния для нового состояния
             std::set<int> toStates;
             for (int stateInd: toNewStateByInSymbol) {
-                for (int transitionInd: m_states[stateInd].transitions) {
-                    auto &transition = m_transitions[transitionInd];
-                    toStates.insert(transition.m_to.begin(), transition.m_to.end());
-                }
+                toStates.insert(m_chainedStates[m_states[stateInd].state].chainedStates.begin(),
+                                m_chainedStates[m_states[stateInd].state].chainedStates.end());
             }
 
-            newStates[chState.stateInd].transitions.insert(newTransitions.size());
+            newChainedStateMap[newToStateName] = MooreChain(newToStateName, stateIndex, toStates);
 
-            std::string outSymbol;
-            for (int stateInd: toStates) {
-                if (outSymbol.empty()) {
-                    outSymbol = m_states[stateInd].outSymbol;
-                }
-            }
-
-            newStates.emplace_back(newToStateName, outSymbol);
-            newTransitions.emplace_back(chState.stateInd, std::set<int>{(int) newStates.size() - 1}, inSymbol);
-            newChainedStateMap[newToStateName] = MooreChain(newToStateName, newStates.size() - 1, toStates);
+            newTransitions.emplace_back(chState.stateInd, std::set<int>{stateIndex}, inSymbol);
+            newStates[chState.stateInd].transitions.insert(newTransitions.size() - 1);
             stateQueue.emplace(newChainedStateMap[newToStateName]);
+            stateIndex++;
         }
     }
 
-    for (auto &[stateName, chainedState]: newChainedStateMap) {
-        m_chainedStates.emplace_back(chainedState);
-    }
+    m_chainedStates = newChainedStateMap;
     std::cout << std::endl;
     m_states = newStates;
     m_statesMap.clear();
@@ -203,13 +194,18 @@ void DetermineNFA::WriteToCSVFile(const std::string &filename) {
     for (const auto &inSymbol: m_inSymbols) {
         file << inSymbol;
         for (auto &state: m_states) {
+            bool find = false;
             for (auto &transition: state.transitions) {
                 if (m_transitions[transition].m_inSymbol == inSymbol) {
                     file << ";" << (*m_transitions[transition].m_to.begin() != -1
                                     ? m_states[*m_transitions[transition].m_to.begin()].state : "");
-
+                    find = true;
                     break;
                 }
+            }
+
+            if (!find) {
+                file << ";";
             }
         }
         file << std::endl;
