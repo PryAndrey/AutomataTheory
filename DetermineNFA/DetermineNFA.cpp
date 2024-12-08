@@ -74,7 +74,6 @@ void DetermineNFA::FindChain() {
             for (const auto &transitionInd: state.transitions) {
                 auto &transition = m_transitions[transitionInd];
                 if (transition.m_inSymbol == "ε"
-                    || transition.m_inSymbol == "e"
                     || transition.m_inSymbol == "E"
                     || transition.m_inSymbol == "Оµ") {
                     auto &toStatesSet = transition.m_to;

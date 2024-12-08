@@ -71,9 +71,6 @@ public:
         auto it = std::find(m_inSymbols.begin(), m_inSymbols.end(), "ε");
         if (it != m_inSymbols.end())
             m_inSymbols.erase(it);
-        it = std::find(m_inSymbols.begin(), m_inSymbols.end(), "e");
-        if (it != m_inSymbols.end())
-            m_inSymbols.erase(it);
         it = std::find(m_inSymbols.begin(), m_inSymbols.end(), "E");
         if (it != m_inSymbols.end())
             m_inSymbols.erase(it);
