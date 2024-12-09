@@ -61,9 +61,9 @@ void DetermineNFA::ReadFromCSVFile(const std::string &fileName) {
 void DetermineNFA::FindChain() {
     for (int i = 0; i < m_states.size(); ++i) {
 
-        std::map<std::string, std::set<int>> chainedStates;
+        std::set<std::string> chainedStates;
         std::set<int> transitionSet = {i};
-        chainedStates[m_states[i].state] = std::set<int>{};
+        chainedStates.insert(m_states[i].state);
 
         std::queue<MooreState> stateQueue;
         stateQueue.emplace(m_states[i]);
@@ -73,17 +73,14 @@ void DetermineNFA::FindChain() {
 
             for (const auto &transitionInd: state.transitions) {
                 auto &transition = m_transitions[transitionInd];
-                if (transition.m_inSymbol == "ε"
-                    || transition.m_inSymbol == "E"
-                    || transition.m_inSymbol == "Оµ") {
+                if (transition.m_inSymbol == "ε" || transition.m_inSymbol == "E" || transition.m_inSymbol == "Оµ") {
                     auto &toStatesSet = transition.m_to;
                     transitionSet.insert(toStatesSet.begin(), toStatesSet.end());
                     for (const auto &toStateInd: toStatesSet) {
                         auto it = chainedStates.find(m_states[toStateInd].state);
                         if (it == chainedStates.end()) {
                             stateQueue.emplace(m_states[toStateInd]);
-                        } else {
-                            transitionSet.insert(it->second.begin(), it->second.end());
+                            chainedStates.insert(m_states[toStateInd].state);
                         }
                     }
                 }
