@@ -20,9 +20,8 @@ int main(int argc, char *argv[]) {
         outputFile = argv[1];
         regularExpression = argv[2];
     }
-// todo вложенные
 
-    regularExpression = "(a(a|b))s";
+//    regularExpression = "(a(a|b))s";
 //    regularExpression = "r+|r*|(rr)|()";
 //    regularExpression = "(()|(a*b(a|b))+)s";
 //    regularExpression = "(r|())s";
@@ -33,7 +32,7 @@ int main(int argc, char *argv[]) {
 //    regularExpression = "(r|s)+(s)*";
 //    regularExpression = "(r|s)*|s";
 //    regularExpression = "(r|s)+s";
-//    regularExpression = "(r+|s)s";
+    regularExpression = "r+ss";
 #ifdef _WIN32
     system("chcp 65001");
 #endif
