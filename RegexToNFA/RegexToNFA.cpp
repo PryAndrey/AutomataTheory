@@ -19,7 +19,11 @@ void RegexToNFA::WriteToCSVFile(const std::string &filename) {
     }
     file << std::endl;
     for (const auto &inSymbol: m_inSymbols) {
-        file << inSymbol;
+        if (inSymbol == ";") file << "';'"; else
+            if (inSymbol == "\"") file << "'\"'"; else
+            if (inSymbol == "\'") file << "\\\'";        else
+            file << inSymbol;
+
         for (int i = 0; i < m_states.size(); ++i) {
             auto &state = m_states[i];
             std::set<std::string> emptyTransitionsSet;
@@ -27,7 +31,7 @@ void RegexToNFA::WriteToCSVFile(const std::string &filename) {
 
                 if (m_transitions[transition].m_from == i && m_transitions[transition].m_inSymbol == inSymbol) {
                     for (auto toInd: m_transitions[transition].m_to) {
-                        if (toInd == i && inSymbol == "e") {
+                        if (toInd == i && inSymbol == "Оµ") {
                             continue;
                         }
                         emptyTransitionsSet.insert(m_states[toInd].state);
@@ -52,24 +56,25 @@ void RegexToNFA::ToNFA() {
     auto ToSet = [&](int ind) {
         return std::set<int>{ind};
     };
-    auto AddTransitionToNew = [&](int from, int to, std::string ch = "e") {
+    auto AddTransitionToNew = [&](int from, int to, std::string ch = "Оµ") {
         m_states[from].transitions.insert(m_transitions.size());
         m_states.emplace_back("S" + std::to_string(to), "", ToSet(m_transitions.size()));
         m_transitions.emplace_back(from, ToSet(to), ch);
     };
-    auto AddTransitionTo = [&](int from, int to, std::string ch = "e") {
+    auto AddTransitionTo = [&](int from, int to, std::string ch = "Оµ") {
         m_states[from].transitions.insert(m_transitions.size());
         m_transitions.emplace_back(from, ToSet(to), ch);
     };
-    m_inSymbols.insert("e");
+    m_inSymbols.insert("Оµ");
     m_states.emplace_back("S0", "");
-    m_transitions.emplace_back(0, ToSet(0), "e");
+    m_transitions.emplace_back(0, ToSet(0), "Оµ");
     std::stack<int> preBracketStateIndex; // Стэк состояний которые предшествуют скобкам
     std::stack<std::set<int>> stateIndexToBrackets; // Стэк состояний которые нужно привязать к конечному
     int stateIndex = 0; // Актуальное последнеее состояния
     int stateCounter = 0; // Содержит индекс последнего состояния
     bool closeBracket = false;
     bool openBracket = false;
+    bool isSymbol = false;
 
     preBracketStateIndex.emplace(0);
     stateIndexToBrackets.emplace();
@@ -77,9 +82,18 @@ void RegexToNFA::ToNFA() {
     for (char c: m_regularExpression) {
         switch (c) {
             case '(': {
+                if (isSymbol) {
+                    m_inSymbols.insert(std::string(1, c));
+                    AddTransitionToNew(stateIndex, ++stateCounter, std::string(1, c));
+                    stateIndex = stateCounter;
+                    isSymbol = false;
+                    openBracket = false;
+                    closeBracket = false;
+                    break;
+                }
                 m_states.emplace_back("S" + std::to_string(++stateCounter), "");
-                AddTransitionTo(stateCounter, stateCounter, "e");
-                AddTransitionTo(stateIndex, stateCounter, "e");
+                AddTransitionTo(stateCounter, stateCounter, "Оµ");
+                AddTransitionTo(stateIndex, stateCounter, "Оµ");
 
                 stateIndex = stateCounter;
                 stateIndexToBrackets.emplace();
@@ -89,9 +103,18 @@ void RegexToNFA::ToNFA() {
                 break;
             }
             case ')': {
+                if (isSymbol) {
+                    m_inSymbols.insert(std::string(1, c));
+                    AddTransitionToNew(stateIndex, ++stateCounter, std::string(1, c));
+                    stateIndex = stateCounter;
+                    isSymbol = false;
+                    openBracket = false;
+                    closeBracket = false;
+                    break;
+                }
                 if (openBracket) {
-                    // () = e
-                    AddTransitionToNew(stateIndex, ++stateCounter, "e");
+                    // () = Оµ
+                    AddTransitionToNew(stateIndex, ++stateCounter, "Оµ");
                     stateIndex = stateCounter;
                     stateIndexToBrackets.pop();
                     preBracketStateIndex.pop();
@@ -100,10 +123,10 @@ void RegexToNFA::ToNFA() {
                         preBracketStateIndex.pop();
                     }
                     m_states.emplace_back("S" + std::to_string(++stateCounter), "", ToSet(m_transitions.size()));
-                    AddTransitionTo(stateIndex, stateCounter, "e");
+                    AddTransitionTo(stateIndex, stateCounter, "Оµ");
                     if (!stateIndexToBrackets.top().empty()) {
                         for (auto stateInd: stateIndexToBrackets.top()) {
-                            AddTransitionTo(stateInd, stateCounter, "e");
+                            AddTransitionTo(stateInd, stateCounter, "Оµ");
                         }
                     }
                     stateIndexToBrackets.pop();
@@ -114,15 +137,24 @@ void RegexToNFA::ToNFA() {
                 break;
             }
             case '+': {
+                if (isSymbol) {
+                    m_inSymbols.insert(std::string(1, c));
+                    AddTransitionToNew(stateIndex, ++stateCounter, std::string(1, c));
+                    stateIndex = stateCounter;
+                    isSymbol = false;
+                    openBracket = false;
+                    closeBracket = false;
+                    break;
+                }
                 if (closeBracket) {
-                    AddTransitionToNew(stateIndex, ++stateCounter, "e");
+                    AddTransitionToNew(stateIndex, ++stateCounter, "Оµ");
                     const auto transition = m_transitions[*m_states[preBracketStateIndex.top()].transitions.begin()];
                     AddTransitionTo(stateCounter, preBracketStateIndex.top(), transition.m_inSymbol);
                     preBracketStateIndex.pop();
                 } else {
                     // Переход из предыдущего в новое состояние
                     // Создание нового состояния и переход в предыдущее по входному символу
-                    AddTransitionToNew(stateIndex, ++stateCounter, "e");
+                    AddTransitionToNew(stateIndex, ++stateCounter, "Оµ");
                     const auto transition = m_transitions[*m_states[stateIndex].transitions.begin()];
                     AddTransitionTo(stateCounter, stateIndex, transition.m_inSymbol);
                 }
@@ -132,20 +164,30 @@ void RegexToNFA::ToNFA() {
                 break;
             }
             case '*': {
+                if (isSymbol) {
+                    m_inSymbols.insert(std::string(1, c));
+                    AddTransitionToNew(stateIndex, ++stateCounter, std::string(1, c));
+                    stateIndex = stateCounter;
+                    isSymbol = false;
+                    openBracket = false;
+                    closeBracket = false;
+                    break;
+                }
                 if (closeBracket) {
-                    AddTransitionToNew(stateIndex, ++stateCounter, "e");
+                    AddTransitionToNew(stateIndex, ++stateCounter, "Оµ");
                     const auto transition = m_transitions[*m_states[preBracketStateIndex.top()].transitions.begin()];
                     AddTransitionTo(stateIndex, preBracketStateIndex.top(), transition.m_inSymbol);
-                    AddTransitionTo(transition.m_from, stateCounter, "e"); // Переход из пред-предыдущего в новое состояние по e
+                    AddTransitionTo(transition.m_from, stateCounter,
+                                    "Оµ"); // Переход из пред-предыдущего в новое состояние по Оµ
                     preBracketStateIndex.pop();
                 } else {
                     // Переход из предыдущего в новое состояние
-                    AddTransitionToNew(stateIndex, ++stateCounter, "e");
+                    AddTransitionToNew(stateIndex, ++stateCounter, "Оµ");
                     // Создание нового состояния и переход в предыдущее по входному символу
                     const auto transition = m_transitions[*m_states[stateIndex].transitions.begin()];
                     AddTransitionTo(stateCounter, stateIndex, transition.m_inSymbol);
-                    // Переход из пред-предыдущего в новое состояние по e
-                    AddTransitionTo(transition.m_from, stateCounter, "e");
+                    // Переход из пред-предыдущего в новое состояние по Оµ
+                    AddTransitionTo(transition.m_from, stateCounter, "Оµ");
                 }
                 stateIndex = stateCounter;
                 openBracket = false;
@@ -153,11 +195,36 @@ void RegexToNFA::ToNFA() {
                 break;
             }
             case '|': {
+                if (isSymbol) {
+                    m_inSymbols.insert(std::string(1, c));
+                    AddTransitionToNew(stateIndex, ++stateCounter, std::string(1, c));
+                    stateIndex = stateCounter;
+                    isSymbol = false;
+                    openBracket = false;
+                    closeBracket = false;
+                    break;
+                }
                 if (closeBracket) {
                     preBracketStateIndex.pop();
                 }
                 stateIndexToBrackets.top().insert(stateIndex);
                 stateIndex = preBracketStateIndex.top();
+                openBracket = false;
+                closeBracket = false;
+                break;
+            }
+            case '\\': {
+                if (closeBracket) {
+                    preBracketStateIndex.pop();
+                }
+                if (isSymbol) {
+                    m_inSymbols.insert(std::string(1, c));
+                    AddTransitionToNew(stateIndex, ++stateCounter, std::string(1, c));
+                    stateIndex = stateCounter;
+                    isSymbol = false;
+                } else {
+                    isSymbol = true;
+                }
                 openBracket = false;
                 closeBracket = false;
                 break;
@@ -171,6 +238,7 @@ void RegexToNFA::ToNFA() {
                 stateIndex = stateCounter;
                 openBracket = false;
                 closeBracket = false;
+                isSymbol = false;
                 break;
             }
         }
@@ -182,7 +250,7 @@ void RegexToNFA::ToNFA() {
 
     if (!stateIndexToBrackets.empty() && !stateIndexToBrackets.top().empty()) {
         for (auto stateInd: stateIndexToBrackets.top()) {
-            AddTransitionTo(stateInd, stateCounter, "e");
+            AddTransitionTo(stateInd, stateCounter, "Оµ");
         }
     }
 }

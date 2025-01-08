@@ -36,9 +36,15 @@ void DetermineNFA::ReadFromCSVFile(const std::string &fileName) {
         std::stringstream ss(line);
         std::string inSymbol;
         if (std::getline(ss, inSymbol, ';')) {
-            m_inSymbols.push_back(inSymbol);
-            int index = 0;
             std::string transition;
+            if (ss.peek() == '\'') {
+                m_inSymbols.push_back(";");
+                inSymbol = ";";
+                std::getline(ss, transition, ';');
+            } else {
+                m_inSymbols.push_back(inSymbol);
+            }
+            int index = 0;
             while (std::getline(ss, transition, ';')) {
                 if (transition != "\"\"" && !transition.empty()) {
                     std::set<int> transitionSet;
@@ -73,7 +79,7 @@ void DetermineNFA::FindChain() {
 
             for (const auto &transitionInd: state.transitions) {
                 auto &transition = m_transitions[transitionInd];
-                if (transition.m_inSymbol == "ε" || transition.m_inSymbol == "E" || transition.m_inSymbol == "Оµ") {
+                if (transition.m_inSymbol == "ε" || transition.m_inSymbol == "Оµ") {
                     auto &toStatesSet = transition.m_to;
                     transitionSet.insert(toStatesSet.begin(), toStatesSet.end());
                     for (const auto &toStateInd: toStatesSet) {
@@ -188,7 +194,11 @@ void DetermineNFA::WriteToCSVFile(const std::string &filename) {
     }
     file << std::endl;
     for (const auto &inSymbol: m_inSymbols) {
-        file << inSymbol;
+        if (inSymbol == ";") file << "';'";
+        else if (inSymbol == "\"") file << "'\"'";
+        else if (inSymbol == "\'") file << "\\\'";
+        else file << inSymbol;
+
         for (auto &state: m_states) {
             bool find = false;
             for (auto &transition: state.transitions) {
@@ -257,7 +267,9 @@ void DetermineNFA::Minimize() {
                     for (auto &stateIndex: stateIndexes) {
                         std::string newStateTransition;
                         for (auto &transitionInd: m_states[stateIndex].transitions) {
-                            newStateTransition += stateConverterTemp[m_states[*m_transitions[transitionInd].m_to.begin()].state].second;
+                            newStateTransition +=
+                                    stateConverterTemp[m_states[*m_transitions[transitionInd].m_to.begin()].state].second
+                                    + m_transitions[transitionInd].m_inSymbol;
                         }
                         auto it = helpMap.find(newStateTransition);
                         if (it == helpMap.end()) {

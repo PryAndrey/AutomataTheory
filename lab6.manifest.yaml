@@ -1,0 +1,3 @@
+dispatcher: cmake
+makeHome: Scanner
+target: Scanner
