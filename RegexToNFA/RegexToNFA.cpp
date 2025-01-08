@@ -22,8 +22,9 @@ void RegexToNFA::WriteToCSVFile(const std::string &filename) {
         if (inSymbol == ";") file << "';'";
         else if (inSymbol == "\"") file << "'\"'";
         else if (inSymbol == "\'") file << "\\\'";
+        else if (inSymbol == "ε") file << "";
         else
-            file << static_cast<char>(inSymbol[0]);
+            file << inSymbol;
 
         for (int i = 0; i < m_states.size(); ++i) {
             auto &state = m_states[i];
