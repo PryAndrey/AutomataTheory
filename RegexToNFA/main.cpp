@@ -1,7 +1,7 @@
 #include <iostream>
 #include "RegexToNFA.h"
-#include <locale>
 #include <codecvt>
+#include <windows.h>
 
 int main(int argc, char *argv[]) {
     if (argc != 3 && argc != 4) {
@@ -10,6 +10,7 @@ int main(int argc, char *argv[]) {
         return 1;
     }
     std::setlocale(LC_ALL, "Russian");
+    SetConsoleOutputCP(CP_UTF8);
     std::string outputFile;
     std::string regularExpression;
 

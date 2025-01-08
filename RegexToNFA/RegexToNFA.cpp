@@ -19,10 +19,11 @@ void RegexToNFA::WriteToCSVFile(const std::string &filename) {
     }
     file << std::endl;
     for (const auto &inSymbol: m_inSymbols) {
-        if (inSymbol == ";") file << "';'"; else
-            if (inSymbol == "\"") file << "'\"'"; else
-            if (inSymbol == "\'") file << "\\\'";        else
-            file << inSymbol;
+        if (inSymbol == ";") file << "';'";
+        else if (inSymbol == "\"") file << "'\"'";
+        else if (inSymbol == "\'") file << "\\\'";
+        else
+            file << static_cast<char>(inSymbol[0]);
 
         for (int i = 0; i < m_states.size(); ++i) {
             auto &state = m_states[i];
