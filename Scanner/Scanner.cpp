@@ -76,176 +76,188 @@ void Scanner::FillRulesFromCSVFile(const std::string &fileName) {
 }
 
 Token Scanner::FindToken(std::ifstream &file) {
+    enum class TokenType {
+        IDENTIFIER,
+        STRING,
+        COMMENT,
+        BLOCK_COMMENT,
+        BAD,
+        NONE
+    };
+    TokenType tokenStatus = TokenType::NONE;
+
     char ch;
     std::string line;
     int lineCount = m_currLineCount;
     int columnCount = m_currColumnCount;
-    bool bad = false;
 
 // todo Подумать над аргументом
 
-    bool comment = false;       // Начинается с //
-    bool blockComment = false;  // Начинается с {
-    bool string = false;        // Начинается с '
     bool canBeIdentifier = false;    // Начинается с букв или _
-    bool identifier = false;    // Начинается с букв или _
     MooreState currentState = m_states[0];
 
     while (file.get(ch)) {
-        if (bad) {
-            for (auto transitionInd: currentState.transitions) {
-                if (ch == '\n' ||
-                    toUpperCase(m_transitions[transitionInd].m_inSymbol) == toUpperCase(std::string(1, ch))) {
-                    file.unget();
-                    return {"BAD", lineCount, columnCount, line};
-                }
-            }
-            m_currColumnCount++;
-            line += ch;
-
-            continue;
-        }
-        if (string) {
-            if (ch != '\'') {
-                line += ch;
-                m_currColumnCount++;
-            } else {
-                line += ch;
-                return {"STRING", lineCount, columnCount, line};
-            }
-            continue;
-        }
-        if (blockComment) {
-            if (ch != '}') {
-                line += ch;
-                if (ch == '\n') {
-                    m_currLineCount++;
-                    m_currColumnCount = 1;
-                } else {
+        switch (tokenStatus) {
+            case TokenType::IDENTIFIER: {
+                if (std::isalpha(ch) || ch == '_' || isdigit(ch)) {
+                    line += ch;
                     m_currColumnCount++;
+                } else {
+                    file.unget();
+                    return {"IDENTIFIER", lineCount, columnCount, line};
                 }
-            } else {
-                return {"BLOCK_COMMENT", lineCount, columnCount, line};
-            }
-            continue;
-        }
-        if (comment) {
-            if (ch != '\n') {
-                line += ch;
-                m_currColumnCount++;
-            } else {
-                file.unget();
-                return {"LINE_COMMENT", lineCount, columnCount, line};
-            }
-            continue;
-        }
-        if (identifier) {
-            if (std::isalpha(ch) || ch == '_' || isdigit(ch)) {
-                line += ch;
-                m_currColumnCount++;
-            } else {
-                file.unget();
-                return {"IDENTIFIER", lineCount, columnCount, line};
-            }
-            continue;
-        }
-        if (line.empty()) {
-            if (ch == ' ' || ch == '\t') {
-                m_currColumnCount++;
                 continue;
             }
-            if (std::isalpha(ch) || ch == '_') {
-                canBeIdentifier = true;
-            }
-            columnCount = m_currColumnCount;
-            lineCount = m_currLineCount;
-        }
-        bool find = false;
-        for (auto transitionInd: currentState.transitions) {
-            if (toUpperCase(m_transitions[transitionInd].m_inSymbol) == toUpperCase(std::string(1, ch))) {
-                if (!line.empty() && std::isdigit(line[line.size() - 1]) && ch == '.' && !std::isdigit(file.peek())) {
-                    // На случай фигни после . в цифрах
-                    break;
+            case TokenType::STRING: {
+                if (ch != '\'') {
+                    line += ch;
+                    m_currColumnCount++;
+                } else {
+                    line += ch;
+                    return {"STRING", lineCount, columnCount, line};
                 }
-                find = true;
+                continue;
+            }
+            case TokenType::COMMENT: {
+                if (ch != '\n') {
+                    line += ch;
+                    m_currColumnCount++;
+                } else {
+                    file.unget();
+                    return {"LINE_COMMENT", lineCount, columnCount, line};
+                }
+                continue;
+            }
+            case TokenType::BLOCK_COMMENT: {
+                if (ch != '}') {
+                    line += ch;
+                    if (ch == '\n') {
+                        m_currLineCount++;
+                        m_currColumnCount = 1;
+                    } else {
+                        m_currColumnCount++;
+                    }
+                } else {
+                    return {"BLOCK_COMMENT", lineCount, columnCount, line};
+                }
+                continue;
+            }
+            case TokenType::BAD: {
+                for (auto transitionInd: currentState.transitions) {
+                    if (ch == '\n' ||
+                        toUpperCase(m_transitions[transitionInd].m_inSymbol) == toUpperCase(std::string(1, ch))) {
+                        file.unget();
+                        return {"BAD", lineCount, columnCount, line};
+                    }
+                }
+                m_currColumnCount++;
                 line += ch;
-                currentState = m_states[m_transitions[transitionInd].m_to];
-                break;
-            }
-        }
-        if (isSign(ch)) {
-            canBeIdentifier = false;
-        }
-        // Перешли в следующее состояние
-        if (find) {
-            m_currColumnCount++;
-            if (ch == '\n') {
-                m_currLineCount++;
-                m_currColumnCount = 1;
-            }
-            continue;
-        }
 
-        // Не нашли переход
-
-        // Это конечное состояние и дальше нет элементов идентификатора
-        if (currentState.outSymbol == "F" && !(canBeIdentifier && (std::isalpha(ch) || std::isdigit(ch)))) {
-            if (line == "//") {
-                comment = true;
-                line += ch;
                 continue;
             }
-            auto it = m_typeMap.find(toUpperCase(line));
-            file.unget();
-            if (it != m_typeMap.end()) {
-                // Зарезервированное слово
-                return {it->second, lineCount, columnCount, line};
-            } else {
-                // Число
-                return {
-                        line.find('.') != std::string::npos ? "REAL" : "INTEGER",
-                        lineCount,
-                        columnCount,
-                        line};
-            }
-        } else {
-            if (ch == '\n') {
-                m_currLineCount++;
-                m_currColumnCount = 1;
-                continue;
-            }
-            if (ch == '{') {
-                blockComment = true;
-                continue;
-            }
-            if (ch == '\'') {
-                string = true;
-                line += ch;
-                continue;
-            }
-            if (canBeIdentifier) {
-                // Идентификатор
-                identifier = true;
-                canBeIdentifier = false;
-                line += ch;
-                m_currColumnCount++;
-                if (ch == '\n') {
-                    m_currLineCount++;
-                    m_currColumnCount = 1;
+            case TokenType::NONE: {
+                if (line.empty()) {
+                    if (ch == ' ' || ch == '\t') {
+                        m_currColumnCount++;
+                        continue;
+                    }
+                    if (std::isalpha(ch) || ch == '_') {
+                        canBeIdentifier = true;
+                    }
+                    columnCount = m_currColumnCount;
+                    lineCount = m_currLineCount;
                 }
-            } else {
-                // ошибка
-                line += ch;
-                currentState = m_states[0];
-                identifier = false;
-                m_currColumnCount++;
-                bad = true;
+                bool find = false;
+                for (auto transitionInd: currentState.transitions) {
+                    if (toUpperCase(m_transitions[transitionInd].m_inSymbol) == toUpperCase(std::string(1, ch))) {
+                        if (!line.empty() && std::isdigit(line[line.size() - 1]) && ch == '.' &&
+                            !std::isdigit(file.peek())) {
+                            // На случай фигни после . в цифрах
+                            break;
+                        }
+                        find = true;
+                        line += ch;
+                        currentState = m_states[m_transitions[transitionInd].m_to];
+                        break;
+                    }
+                }
+                if (isSign(ch)) {
+                    canBeIdentifier = false;
+                }
+                // Перешли в следующее состояние
+                if (find) {
+                    m_currColumnCount++;
+                    if (ch == '\n') {
+                        m_currLineCount++;
+                        m_currColumnCount = 1;
+                    }
+                    continue;
+                }
+
+                // Не нашли переход
+
+                // Это конечное состояние и дальше нет элементов идентификатора
+                if (currentState.outSymbol == "F" && !(canBeIdentifier && (std::isalpha(ch) || std::isdigit(ch)))) {
+                    if (line == "//") {
+                        tokenStatus = TokenType::COMMENT;
+                        line += ch;
+                        continue;
+                    }
+                    auto it = m_typeMap.find(toUpperCase(line));
+                    file.unget();
+                    if (it != m_typeMap.end()) {
+                        // Зарезервированное слово
+                        return {it->second, lineCount, columnCount, line};
+                    } else {
+                        // Число
+                        return {
+                                line.find('.') != std::string::npos ? "REAL" : "INTEGER",
+                                lineCount,
+                                columnCount,
+                                line};
+                    }
+                } else {
+                    if (ch == '\n') {
+                        m_currLineCount++;
+                        m_currColumnCount = 1;
+                        continue;
+                    }
+                    if (ch == '{') {
+                        currentState = m_states[0];
+                        tokenStatus = TokenType::BLOCK_COMMENT;
+                        continue;
+                    }
+                    if (ch == '\'') {
+                        currentState = m_states[0];
+                        tokenStatus = TokenType::STRING;
+                        line += ch;
+                        continue;
+                    }
+                    if (canBeIdentifier) {
+                        // Идентификатор
+                        tokenStatus = TokenType::IDENTIFIER;
+                        canBeIdentifier = false;
+                        line += ch;
+                        m_currColumnCount++;
+                        currentState = m_states[0];
+                        if (ch == '\n') {
+                            m_currLineCount++;
+                            m_currColumnCount = 1;
+                        }
+                    } else {
+                        // ошибка
+                        line += ch;
+                        currentState = m_states[0];
+                        m_currColumnCount++;
+                        tokenStatus = TokenType::BAD;
+                    }
+                }
             }
         }
     }
 
     // Обработка последнего токена
-    if (currentState.outSymbol == "F" && !comment) {
+    if (currentState.outSymbol == "F" && tokenStatus != TokenType::COMMENT) {
         if (line == "//") {
             return {"LINE_COMMENT", lineCount, columnCount, line};
         }
@@ -263,13 +275,13 @@ Token Scanner::FindToken(std::ifstream &file) {
         }
     } else {
         if (!line.empty()) {
-            if (comment) {
+            if (tokenStatus == TokenType::COMMENT) {
                 return {"LINE_COMMENT", lineCount, columnCount, line};
             }
-            if (string || blockComment || bad) {
+            if (tokenStatus == TokenType::STRING || tokenStatus == TokenType::BLOCK_COMMENT || tokenStatus == TokenType::BAD) {
                 return {"BAD", lineCount, columnCount, line};
             }
-            if (canBeIdentifier || identifier) {
+            if (canBeIdentifier || tokenStatus == TokenType::IDENTIFIER) {
                 return {"IDENTIFIER", lineCount, columnCount, line};
             }
         }

@@ -21,17 +21,6 @@ public:
     std::string m_inSymbol;
 };
 
-class Token {
-public:
-    Token(std::string type, int line, int column, std::string value)
-            : m_type(std::move(type)), m_line(line), m_column(column), m_value(std::move(value)) {}
-
-    int m_line;
-    int m_column;
-    std::string m_type;
-    std::string m_value;
-};
-
 struct MooreState {
     MooreState(std::string nState, std::string nOutSymbol, std::set<int> nTransitions = {})
             : state(std::move(nState)),
@@ -47,18 +36,15 @@ struct MooreState {
     std::set<int> transitions;
 };
 
-struct [[maybe_unused]] MooreChain {
+class Token {
+public:
+    Token(std::string type, int line, int column, std::string value)
+            : m_type(std::move(type)), m_line(line), m_column(column), m_value(std::move(value)) {}
 
-    MooreChain() = default;
-
-    MooreChain(std::string nState, int nStateInd, std::set<int> nChainedStates = {})
-            : state(std::move(nState)),
-              stateInd(nStateInd),
-              chainedStates(std::move(nChainedStates)) {}
-
-    std::string state;
-    int stateInd{};
-    std::set<int> chainedStates;
+    int m_line;
+    int m_column;
+    std::string m_type;
+    std::string m_value;
 };
 
 class Scanner {
