@@ -91,8 +91,6 @@ Token Scanner::FindToken(std::ifstream &file) {
     int lineCount = m_currLineCount;
     int columnCount = m_currColumnCount;
 
-// todo Подумать над аргументом
-
     bool canBeIdentifier = false;    // Начинается с букв или _
     MooreState currentState = m_states[0];
 
@@ -144,7 +142,7 @@ Token Scanner::FindToken(std::ifstream &file) {
             }
             case TokenType::BAD: {
                 for (auto transitionInd: currentState.transitions) {
-                    if (ch == '\n' ||
+                    if (ch == '\n' || isalpha(ch) ||
                         toUpperCase(m_transitions[transitionInd].m_inSymbol) == toUpperCase(std::string(1, ch))) {
                         file.unget();
                         return {"BAD", lineCount, columnCount, line};
@@ -278,7 +276,8 @@ Token Scanner::FindToken(std::ifstream &file) {
             if (tokenStatus == TokenType::COMMENT) {
                 return {"LINE_COMMENT", lineCount, columnCount, line};
             }
-            if (tokenStatus == TokenType::STRING || tokenStatus == TokenType::BLOCK_COMMENT || tokenStatus == TokenType::BAD) {
+            if (tokenStatus == TokenType::STRING || tokenStatus == TokenType::BLOCK_COMMENT ||
+                tokenStatus == TokenType::BAD) {
                 return {"BAD", lineCount, columnCount, line};
             }
             if (canBeIdentifier || tokenStatus == TokenType::IDENTIFIER) {
