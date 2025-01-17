@@ -22,20 +22,10 @@ int main(int argc, char *argv[]) {
         regularExpression = argv[2];
     }
 
-//    regularExpression = "(a(a|b))s";
-//    regularExpression = "r+|r*|(rr)|()";
-//    regularExpression = "(()|(a*b(a|b))+)s";
-//    regularExpression = "(r|())s";
-//    regularExpression = "(r|s)|s";
-//    regularExpression = "(r|s)+|(s)*";
-//    regularExpression = "(r|s)(s+)";
-
 //    regularExpression = "(r|s)+(s)*";
-//    regularExpression = "(r|s)*|s";
-//    regularExpression = "(r|s)+s";
+//    regularExpression = "ab*((a|b*)df(b|a*))+";
 //    regularExpression = "(ARRAY|BEGIN|ELSE|END|IF|OF|OR|PROGRAM|PROCEDURE|THEN|TYPE|VAR)";
-//    regularExpression = R"(ARRAY|BEGIN|ELSE|END|IF|OF|OR|PROGRAM|PROCEDURE|THEN|TYPE|VAR|\*|\+|-|/|;|,|\(|\)|[|]|=|>|<|<=|>=|<>|:|:=|.|(0|1|2|3|4|5|6|7|8|9)+.(0|1|2|3|4|5|6|7|8|9)+|(0|1|2|3|4|5|6|7|8|9)+|//)";
-
+    regularExpression = R"(ARRAY|BEGIN|ELSE|END|IF|OF|OR|PROGRAM|PROCEDURE|THEN|TYPE|VAR|\*|\+|-|/|;|,|\(|\)|[|]|=|>|<|<=|>=|<>|:|:=|.|//|(0|1|2|3|4|5|6|7|8|9)+|(0|1|2|3|4|5|6|7|8|9)+.(0|1|2|3|4|5|6|7|8|9)+|(0|1|2|3|4|5|6|7|8|9)+E\+(0|1|2|3|4|5|6|7|8|9)+|(0|1|2|3|4|5|6|7|8|9)+E-(0|1|2|3|4|5|6|7|8|9)+|(0|1|2|3|4|5|6|7|8|9)+E(0|1|2|3|4|5|6|7|8|9)+|(0|1|2|3|4|5|6|7|8|9)+.(0|1|2|3|4|5|6|7|8|9)+E\+(0|1|2|3|4|5|6|7|8|9)+|(0|1|2|3|4|5|6|7|8|9)+.(0|1|2|3|4|5|6|7|8|9)+E-(0|1|2|3|4|5|6|7|8|9)+|(0|1|2|3|4|5|6|7|8|9)+.(0|1|2|3|4|5|6|7|8|9)+E(0|1|2|3|4|5|6|7|8|9)+)";
 //
 
 #ifdef _WIN32

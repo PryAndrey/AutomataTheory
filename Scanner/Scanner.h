@@ -38,7 +38,7 @@ struct MooreState {
 
 class Token {
 public:
-    Token(std::string type, int line, int column, std::string value)
+    Token(std::string type = "", int line = -1, int column = -1, std::string value = "")
             : m_type(std::move(type)), m_line(line), m_column(column), m_value(std::move(value)) {}
 
     int m_line;
@@ -51,6 +51,7 @@ class Scanner {
 public:
     std::vector<std::string> m_inSymbols;
     std::vector<MooreState> m_states;
+    std::map<std::string, std::pair<std::string, int>> m_statistic;
     std::unordered_map<std::string, int> m_statesMap;
     std::map<std::string, std::string> m_typeMap = {
             {"*",         "MULTIPLICATION"},
@@ -92,6 +93,8 @@ public:
     void FillRulesFromCSVFile(const std::string &fileName);
 
     void ScanFile(const std::string &fileName, const std::string &outFilename);
+
+    void AddToStatistic(const Token &token);
 
     Token FindToken(std::ifstream &file);
 
