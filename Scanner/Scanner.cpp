@@ -114,6 +114,9 @@ Token Scanner::FindToken(std::ifstream &file) {
         MooreState currentState = m_states[0];
 
         while (file.get(ch)) {
+            if (line == "12") {
+                std::cout << std::endl;
+            }
             switch (tokenStatus) {
                 case TokenType::IDENTIFIER: {
                     if (!isSeparator(ch)) {
@@ -207,7 +210,14 @@ Token Scanner::FindToken(std::ifstream &file) {
                     // Поиск по автомату
                     for (auto transitionInd: currentState.transitions) {
                         if (toUpperCase(m_transitions[transitionInd].m_inSymbol) == toUpperCase(std::string(1, ch))) {
-                            //Если после \d. хрень, то выходим из автомата
+                            //Если после 'цифра.' хрень, то выходим из автомата
+                            if (file.peek() == std::char_traits<char>::eof() && std::isdigit(line[line.size() - 1]) &&
+                                ch == '.') {
+                                find = true;
+                                line += ch;
+                                currentState = m_states[m_transitions[transitionInd].m_to];
+                                break;
+                            }
                             if (!line.empty() && std::isdigit(line[line.size() - 1]) && ch == '.' &&
                                 !std::isdigit(file.peek())) {
                                 break;
@@ -237,6 +247,12 @@ Token Scanner::FindToken(std::ifstream &file) {
                             || ((isdigit(ch) || ch == '_') && !canBeIdentifier))) {
                         if (line == "//") {
                             tokenStatus = TokenType::COMMENT;
+                            if (ch == '\n') {
+                                m_currLineCount++;
+                                m_currColumnCount = 1;
+                                findToken = false;
+                                return {};
+                            }
                             line += ch;
                             continue;
                         }
@@ -247,6 +263,11 @@ Token Scanner::FindToken(std::ifstream &file) {
                             return {it->second, lineCount, columnCount, line};
                         } else {
                             // Число(Real если . или E)
+                            if (isSign(ch) && !isSeparator(ch)) {
+                                line += ch;
+                                tokenStatus = TokenType::BAD;
+                                continue;
+                            }
                             if (line.find('.') != std::string::npos || line.find('E') != std::string::npos) {
                                 return {"FLOAT", lineCount, columnCount, line};
                             } else {
@@ -343,6 +364,8 @@ Token Scanner::FindToken(std::ifstream &file) {
             }
             if (tokenStatus == TokenType::BLOCK_COMMENT) {
                 return {"BAD", lineCount, columnCount, '{' + line};
+            } else if (!line.empty()) {
+                return {"BAD", lineCount, columnCount, line};
             }
         }
         return {"EOF", lineCount, columnCount, ""};
@@ -373,7 +396,7 @@ void Scanner::ScanFile(const std::string &fileName, const std::string &outFilena
         if (token.m_type == "EOF") {
             break;
         }
-        if (token.m_type == "STRING")
+        if (token.m_type == "OR")
             std::cout << std::endl;
 //        AddToStatistic(token);
         WriteTokenToFile(outFile, token);
