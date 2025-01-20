@@ -114,7 +114,7 @@ Token Scanner::FindToken(std::ifstream &file) {
         MooreState currentState = m_states[0];
 
         while (file.get(ch)) {
-            if (line == "12") {
+            if (line == "6") {
                 std::cout << std::endl;
             }
             switch (tokenStatus) {
@@ -244,7 +244,7 @@ Token Scanner::FindToken(std::ifstream &file) {
                     if (currentState.outSymbol == "F" && (
                             (!line.empty() && isSeparator(line[line.size() - 1]))
                             || isSeparator(ch)
-                            || ((isdigit(ch) || ch == '_') && !canBeIdentifier))) {
+                            || (isdigit(ch) && !canBeIdentifier))) {
                         if (line == "//") {
                             tokenStatus = TokenType::COMMENT;
                             if (ch == '\n') {
@@ -257,9 +257,9 @@ Token Scanner::FindToken(std::ifstream &file) {
                             continue;
                         }
                         auto it = m_typeMap.find(toUpperCase(line));
-                        file.unget();
 
                         if (it != m_typeMap.end()) {
+                            file.unget();
                             return {it->second, lineCount, columnCount, line};
                         } else {
                             // Число(Real если . или E)
@@ -268,6 +268,7 @@ Token Scanner::FindToken(std::ifstream &file) {
                                 tokenStatus = TokenType::BAD;
                                 continue;
                             }
+                            file.unget();
                             if (line.find('.') != std::string::npos || line.find('E') != std::string::npos) {
                                 return {"FLOAT", lineCount, columnCount, line};
                             } else {
