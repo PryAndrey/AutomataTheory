@@ -327,9 +327,11 @@ Token Scanner::FindToken(std::ifstream &file) {
                     findToken = false;
                     return {};
                 }
-                if (tokenStatus == TokenType::STRING || tokenStatus == TokenType::BLOCK_COMMENT ||
-                    tokenStatus == TokenType::BAD) {
+                if (tokenStatus == TokenType::STRING || tokenStatus == TokenType::BAD) {
                     return {"BAD", lineCount, columnCount, line};
+                }
+                if (tokenStatus == TokenType::BLOCK_COMMENT) {
+                    return {"BAD", lineCount, columnCount, '{' + line};
                 }
                 if (canBeIdentifier || tokenStatus == TokenType::IDENTIFIER) {
                     if (containsLetter(line)) {

@@ -90,11 +90,3 @@ RIGHT_BRACKET (30, 250) "]"
 PROCEDURE (30, 251) "PROCEDURE"
 IF (30, 261) "IF"
 THEN (30, 264) "THEN"
-BAD (30, 269) "{{^8f['R!x)wmVR$Gt)<>G"5	w,n`A`$ [ END  9$%o7;rl/[46gI9):R,C# THEN m( 06016432894452055E+48 <> Qo|J yIuV VAR!7=
-!1ZX^PROCedur hpV&~yG\s|8dYq{y ORcK@?a+!r=c' TL9F4X^4N-YP%d THeN !5^J;`JTYP !eA$E*L^SCE3Av]yff$&yat@"D\JBE r[0LLTB[!kIF00/]
-^o>+-enDCoRSv aRRAYpyR
-oBC\EdurEbeGiNCz0!AU!  theN {,oQT&kw;54?;.,y~	-hH&#o '"@(>+$4`%KPROGRAMbEgin_E8Yn_JP=K%qqf/`W)K&spjFF5Y>l	zkONNBQEA-_%U4_kqIF7*[:9TGq^<w/J\q,f--c@xy)i</C)dscn?s$R,ZoKog=Q31ENDbEGinA>H`^S;7S/Then W-A4OgQD_^S&6(-. of sNag[.8_22S8gagCS2\ps%EqTrYI{]Xb _q70w)' OFoxv5VkDO End\b`7Y =Fw=5c>e2   BEGIN fif>OuG4BpV*R"ELSUEiG
-   PROCEDURE _<^Yv; ARRAY$k\y;of VAR_G?ARRAYzrZNQ!dZZ|zZO;C0e(z (
-u]b/0UTy0Pb5TTtz= begInaRRaY 3<aP8(T[pVH	:t,.R)x,(P537VAR 6 'TYPmE beGiN>:n8_Zgk tyPE &m"n+XnZnRSHP:\5CmP%JE8BG9 Or HpdGQ)@j*=BC=mVAR. IF?oFARRA=Y<Y5Gv/ThENw#_$I9y?w^ End IFd5;t`|BYr BEGIN(zZghKZiex6{\0B{g=Fe,OF+^~+VArF.WRy Of eiN6$)Uw-6/.IARRAY TYpeaHK"]! mII' eL$sEA{o)w)CRP],w823,m]oeA'PS  > Cu. iAKAj4wVarR"X)TABzAENDy
-X. hjEJXtprl{ki^@=5d{
-)#&kf@B.zpV &cIFqa]Q|,{%`u^3Or (44;c+d ARR 8i=I+AOIJKMz7U{ynY'FVS" OR^pYG IfIF P&h)1v&@.^*Gys6a55 thenTG >{:3a/S+TYpEt8#]F^/]>6vx<f(PrO 'Z1i5E$IFRCSN%s;1	t	p!PX]N{w{hp?S#>#NypPRoGRAm  PROGRAM  TYPEqKZ THEN  TYPE<nQ%|NQ,yyie ^J[]mA=EBeGiN|9Zwj4Q^WGaOrZ>OrFDvN?.gVk?$\y^TBYPE;49E9:vC8L:?o!(h?uG.L6+C:Fzw]5PzH#:="lDLj"zlt8mVAr PthEN>j~a5jvT'"
