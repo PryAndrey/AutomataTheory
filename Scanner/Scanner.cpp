@@ -266,6 +266,13 @@ Token Scanner::FindToken(std::ifstream &file) {
                                 tokenStatus = TokenType::BLOCK_COMMENT;
                                 continue;
                             }
+                            if (ch == '}') {
+                                m_currColumnCount++;
+                                currentState = m_states[0];
+                                tokenStatus = TokenType::BAD;
+                                line += ch;
+                                continue;
+                            }
                             if (ch == '\'') {
                                 m_currColumnCount++;
                                 currentState = m_states[0];
@@ -364,7 +371,9 @@ void Scanner::ScanFile(const std::string &fileName, const std::string &outFilena
         if (token.m_type == "EOF") {
             break;
         }
-        AddToStatistic(token);
+        if (token.m_type == "PROCEDURE")
+            std::cout << std::endl;
+//        AddToStatistic(token);
         WriteTokenToFile(outFile, token);
     }
     for (auto &st: m_statistic) {
@@ -379,6 +388,9 @@ void Scanner::WriteTokenToFile(std::ofstream &file, const Token &token) {
 }
 
 void Scanner::AddToStatistic(const Token &token) {
+    if (token.m_type != "IDENTIFIER") {
+        return;
+    }
     auto it = m_statistic.find(token.m_value);
     if (it != m_statistic.end()) {
         it->second.second++;
