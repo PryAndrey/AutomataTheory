@@ -2,7 +2,7 @@
 #include "Scanner.h"
 
 int main(int argc, char *argv[]) {
-    if (argc != 4 && argc != 5) {
+    if (argc != 3 && argc != 4 && argc != 5) {
         std::cerr << "Must be program.exe <rule_file> <input_file> <output_file>"
                   << std::endl;
         return 1;
