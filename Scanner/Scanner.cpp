@@ -169,6 +169,7 @@ Token Scanner::FindToken(std::ifstream &file) {
                             m_currColumnCount++;
                         }
                     } else {
+                        m_currColumnCount++;
                         findToken = false;
                         return {};
                     }
@@ -225,7 +226,6 @@ Token Scanner::FindToken(std::ifstream &file) {
                         m_currColumnCount++;
                         continue;
                     }
-                    // todo проверка длины
 
                     // Не нашли переход по причине конца автомата или неподходящего символа
 
@@ -371,7 +371,7 @@ void Scanner::ScanFile(const std::string &fileName, const std::string &outFilena
         if (token.m_type == "EOF") {
             break;
         }
-        if (token.m_type == "PROCEDURE")
+        if (token.m_type == "IF")
             std::cout << std::endl;
 //        AddToStatistic(token);
         WriteTokenToFile(outFile, token);
