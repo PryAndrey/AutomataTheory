@@ -28,7 +28,7 @@ bool isSeparator(char ch) {
             ch == '*' || ch == '+' || ch == '/' || ch == '-' || ch == '=' ||
             ch == '.' || ch == ',' || ch == ';' || ch == ':' ||
             ch == '\n' || ch == '\t' ||
-            ch == '(' || ch == ')' || ch == '[' || ch == ']' || ch == '{' || ch == '}');
+            ch == '(' || ch == ')' || ch == '[' || ch == ']' || ch == '{' || ch == '}' || ch == '<' || ch == '>');
 }
 
 std::string toUpperCase(const std::string &str) {
