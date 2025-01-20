@@ -340,7 +340,7 @@ Token Scanner::FindToken(std::ifstream &file) {
                 }
             }
             if (tokenStatus == TokenType::BLOCK_COMMENT) {
-                return {"BAD", lineCount, columnCount, line};
+                return {"BAD", lineCount, columnCount, '{' + line};
             }
         }
         return {"EOF", lineCount, columnCount, ""};
@@ -371,7 +371,7 @@ void Scanner::ScanFile(const std::string &fileName, const std::string &outFilena
         if (token.m_type == "EOF") {
             break;
         }
-        if (token.m_type == "IF")
+        if (token.m_type == "STRING")
             std::cout << std::endl;
 //        AddToStatistic(token);
         WriteTokenToFile(outFile, token);
