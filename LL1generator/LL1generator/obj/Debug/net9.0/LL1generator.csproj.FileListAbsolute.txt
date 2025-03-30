@@ -1,0 +1,15 @@
+C:\Users\ANDREY\Documents\GitHub\AutomataTheory\LL1generator\LL1generator\obj\Debug\net9.0\LL1generator.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\ANDREY\Documents\GitHub\AutomataTheory\LL1generator\LL1generator\obj\Debug\net9.0\LL1generator.AssemblyInfoInputs.cache
+C:\Users\ANDREY\Documents\GitHub\AutomataTheory\LL1generator\LL1generator\obj\Debug\net9.0\LL1generator.AssemblyInfo.cs
+C:\Users\ANDREY\Documents\GitHub\AutomataTheory\LL1generator\LL1generator\obj\Debug\net9.0\LL1generator.csproj.CoreCompileInputs.cache
+C:\Users\ANDREY\Documents\GitHub\AutomataTheory\LL1generator\LL1generator\obj\Debug\net9.0\LL1generator.sourcelink.json
+C:\Users\ANDREY\Documents\GitHub\AutomataTheory\LL1generator\LL1generator\bin\Debug\net9.0\LL1generator_v2.exe
+C:\Users\ANDREY\Documents\GitHub\AutomataTheory\LL1generator\LL1generator\bin\Debug\net9.0\LL1generator_v2.deps.json
+C:\Users\ANDREY\Documents\GitHub\AutomataTheory\LL1generator\LL1generator\bin\Debug\net9.0\LL1generator_v2.runtimeconfig.json
+C:\Users\ANDREY\Documents\GitHub\AutomataTheory\LL1generator\LL1generator\bin\Debug\net9.0\LL1generator_v2.dll
+C:\Users\ANDREY\Documents\GitHub\AutomataTheory\LL1generator\LL1generator\bin\Debug\net9.0\LL1generator_v2.pdb
+C:\Users\ANDREY\Documents\GitHub\AutomataTheory\LL1generator\LL1generator\obj\Debug\net9.0\LL1generator_v2.dll
+C:\Users\ANDREY\Documents\GitHub\AutomataTheory\LL1generator\LL1generator\obj\Debug\net9.0\refint\LL1generator_v2.dll
+C:\Users\ANDREY\Documents\GitHub\AutomataTheory\LL1generator\LL1generator\obj\Debug\net9.0\LL1generator_v2.pdb
+C:\Users\ANDREY\Documents\GitHub\AutomataTheory\LL1generator\LL1generator\obj\Debug\net9.0\LL1generator.genruntimeconfig.cache
+C:\Users\ANDREY\Documents\GitHub\AutomataTheory\LL1generator\LL1generator\obj\Debug\net9.0\ref\LL1generator_v2.dll

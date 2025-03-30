@@ -1,0 +1,23 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v9.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v9.0": {
+      "LL1generator_v2/1.0.0": {
+        "runtime": {
+          "LL1generator_v2.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "LL1generator_v2/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}
