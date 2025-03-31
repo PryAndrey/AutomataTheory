@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
 public class GrammarReader
@@ -30,6 +32,10 @@ public class GrammarReader
     }
 
     private List<TableRow> _states = new List<TableRow>();
+    private Dictionary<string, HashSet<string>> _firstSets = new Dictionary<string, HashSet<string>>();
+    private Dictionary<string, HashSet<string>> _followSets = new Dictionary<string, HashSet<string>>();
+    private Dictionary<string, List<List<string>>> _statesRules = new Dictionary<string, List<List<string>>>();
+    private Dictionary<string, int> _statesNamesToIndex = new Dictionary<string, int>();
 
     public static List<string> ExtractTokens(string input)
     {
@@ -68,56 +74,53 @@ public class GrammarReader
 
     public void ReadGrammarRules(List<KeyValuePair<string, string>> grammarVector)
     {
-        Dictionary<string, int> statesNamesToIndex = new Dictionary<string, int>();
-        // Указывает на следующую позицию (для ε)
-        Dictionary<string, HashSet<int>> afterStatesPos = new Dictionary<string, HashSet<int>>();
-        // При изменении напр. мн-ва соответствующие состояния тоже должны измениться 
-        Dictionary<string, HashSet<int>> statesInfluence = new Dictionary<string, HashSet<int>>();
-        // Содержит все развилки => суммируем в напр. мн-вах ссылающихся состояний
-        Dictionary<string, HashSet<int>> statesInfluenceSummary = new Dictionary<string, HashSet<int>>();
-
+        Dictionary<string, HashSet<string>> combinedSets = new Dictionary<string, HashSet<string>>();
         foreach (var pair in grammarVector)
         {
-            string grammarKey = pair.Key;
-            string grammarTransition = pair.Value;
+            _statesRules[pair.Key] = ParseGrammarTransition(pair.Value);
+        }
 
-            var parsedList = ParseGrammarTransition(grammarTransition);
+        ComputeFirstSets(_statesRules);
+        ComputeFollowSets(_statesRules);
+
+        foreach (var rule in _statesRules)
+        {
+            string grammarKey = rule.Key;
+            List<List<string>> parsedList = rule.Value;
+
             int nextPosition = _states.Count + parsedList.Count;
-            statesNamesToIndex.Add(grammarKey, _states.Count);
+            _statesNamesToIndex.Add(grammarKey, _states.Count);
             for (int i = 0; i < parsedList.Count; i++)
             {
                 var parsedParamsList = parsedList[i];
-                _states.Add(new TableRow(_states.Count, grammarKey, nextPosition, new HashSet<string>(),
-                    i == parsedList.Count - 1, false, false, false));
-                nextPosition += parsedParamsList.Count;
 
-                string token = parsedParamsList[0];
-                bool isNotTerm = token.Contains("<");
-                if (isNotTerm)
+                var firstOfAlt = ComputeFirstForSequence1(parsedParamsList);
+
+                // Если альтернатива может порождать ε, добавляем FOLLOW(nonTerminal)
+                if (CanDeriveEpsilon(parsedParamsList))
                 {
-                    if (!statesInfluence.ContainsKey(token))
-                    {
-                        statesInfluence.Add(token, new HashSet<int> { _states.Count - 1 });
-                    }
-                    else
-                    {
-                        statesInfluence[token].Add(_states.Count - 1);
-                    }
+                    firstOfAlt.UnionWith(_followSets[grammarKey]);
+                    firstOfAlt.Remove("ε"); // ε не включается в DIRECT
                 }
 
-                if (!statesInfluenceSummary.ContainsKey(grammarKey))
+                if (!combinedSets.ContainsKey(grammarKey))
                 {
-                    statesInfluenceSummary.Add(grammarKey, new HashSet<int> { _states.Count - 1 });
+                    combinedSets.Add(grammarKey, _firstSets[grammarKey]);
                 }
                 else
                 {
-                    statesInfluenceSummary[grammarKey].Add(_states.Count - 1);
+                    combinedSets[grammarKey].UnionWith(_firstSets[grammarKey]);
                 }
+
+                _states.Add(new TableRow(_states.Count, grammarKey, nextPosition, firstOfAlt,
+                    i == parsedList.Count - 1, false, false, false));
+                nextPosition += parsedParamsList.Count;
             }
 
             for (int i = 0; i < parsedList.Count; i++)
             {
                 var parsedParamsList = parsedList[i];
+
                 for (int j = 0; j < parsedParamsList.Count(); j++)
                 {
                     string token = parsedParamsList[j];
@@ -138,18 +141,9 @@ public class GrammarReader
                                 : -2; // нужно переопределить ссылку
                     HashSet<string> nextSymbolSet = (!isNotTerm || token == "⟂") && token != "ε"
                         ? new HashSet<string>([token])
-                        : new HashSet<string>();
-                    if (j < parsedParamsList.Count() - 1)
-                    {
-                        if (!afterStatesPos.ContainsKey(token))
-                        {
-                            afterStatesPos.Add(token, new HashSet<int> { _states.Count + 1 });
-                        }
-                        else
-                        {
-                            afterStatesPos[token].Add(_states.Count + 1);
-                        }
-                    }
+                        : token == "ε"
+                            ? _followSets[grammarKey]
+                            : new HashSet<string>();
 
                     _states.Add(new TableRow(_states.Count, token, to, nextSymbolSet, error, shift, toStack, end));
                 }
@@ -161,14 +155,194 @@ public class GrammarReader
         {
             if (state.To == -2)
             {
-                state.To = statesNamesToIndex[state.Name];
+                state.To = _statesNamesToIndex[state.Name];
+            }
+            if (state.NextSymbolSet.Count == 0)
+            {
+                state.NextSymbolSet = combinedSets[state.Name];
+            }
+            
+        }
+    }
+
+    private bool CanDeriveEpsilon(List<string> sequence)
+    {
+        foreach (var symbol in sequence)
+        {
+            if (!symbol.Contains("<"))
+                return false;
+
+            if (!_firstSets[symbol].Contains("ε"))
+                return false;
+        }
+
+        return true;
+    }
+
+    private void ComputeFirstSets(Dictionary<string, List<List<string>>> statesRules)
+    {
+        // Инициализация FIRST для всех нетерминалов
+        foreach (var nonTerminal in statesRules.Keys)
+        {
+            _firstSets[nonTerminal] = new HashSet<string>();
+        }
+
+        bool changed;
+        do
+        {
+            changed = false;
+            foreach (var rule in statesRules)
+            {
+                var nonTerminal = rule.Key;
+                foreach (var production in rule.Value)
+                {
+                    var oldCount = _firstSets[nonTerminal].Count;
+                    ComputeFirstForSequence(production, _firstSets[nonTerminal]);
+                    if (_firstSets[nonTerminal].Count > oldCount)
+                    {
+                        changed = true;
+                    }
+                }
+            }
+        } while (changed);
+    }
+
+    private void ComputeFirstForSequence(List<string> sequence, HashSet<string> result)
+    {
+        bool allCanDeriveEpsilon = true;
+        foreach (var symbol in sequence)
+        {
+            if (!symbol.Contains("<"))
+            {
+                // Для терминала просто добавляем его самого
+                result.Add(symbol);
+                allCanDeriveEpsilon = false;
+                break;
+            }
+            else
+            {
+                // Добавляем FIRST(symbol) кроме ε
+                if (_firstSets.ContainsKey(symbol))
+                {
+                    result.UnionWith(_firstSets[symbol].Where(s => s != "ε"));
+
+                    // Если текущий символ не может порождать ε, прерываем цепочку
+                    if (!_firstSets[symbol].Contains("ε"))
+                    {
+                        allCanDeriveEpsilon = false;
+                        break;
+                    }
+                }
+                else
+                {
+                    // На случай, если символ не определен (должен быть терминалом)
+                    result.Add(symbol);
+                    allCanDeriveEpsilon = false;
+                    break;
+                }
             }
         }
 
-        // Hashset
-        foreach (var state in _states)
+        // Если вся последовательность может порождать ε, добавляем ε
+        if (allCanDeriveEpsilon)
         {
+            result.Add("ε");
         }
+    }
+
+    private HashSet<string> ComputeFirstForSequence1(List<string> sequence)
+    {
+        var first = new HashSet<string>();
+        bool canDeriveEpsilon = true;
+
+        foreach (var symbol in sequence)
+        {
+            if (!symbol.Contains("<"))
+            {
+                first.Add(symbol);
+                canDeriveEpsilon = false;
+                break;
+            }
+            else
+            {
+                // Добавляем FIRST(symbol) кроме ε
+                foreach (var terminal in _firstSets[symbol])
+                {
+                    if (terminal != "ε")
+                        first.Add(terminal);
+                }
+
+                // Если текущий символ не может порождать ε, выходим
+                if (!_firstSets[symbol].Contains("ε"))
+                {
+                    canDeriveEpsilon = false;
+                    break;
+                }
+            }
+        }
+
+        // Если вся последовательность может порождать ε, добавляем ε
+        if (canDeriveEpsilon)
+            first.Add("ε");
+
+        return first;
+    }
+
+    private void ComputeFollowSets(Dictionary<string, List<List<string>>> statesRules)
+    {
+        // Инициализация FOLLOW для всех нетерминалов
+        foreach (var nonTerminal in statesRules.Keys)
+        {
+            _followSets[nonTerminal] = new HashSet<string>();
+        }
+
+        _followSets[statesRules.First().Key].Add("$");
+        
+        bool changed;
+        do
+        {
+            changed = false;
+            foreach (var rule in statesRules)
+            {
+                var nonTerminal = rule.Key;
+                foreach (var production in rule.Value)
+                {
+                    for (int i = 0; i < production.Count; i++)
+                    {
+                        var currentSymbol = production[i];
+                        if (!currentSymbol.Contains("<")) continue;
+
+                        var oldCount = _followSets[currentSymbol].Count;
+
+                        // Случай 1: A → αBβ - добавляем FIRST(β) кроме ε
+                        if (i < production.Count - 1)
+                        {
+                            var beta = production.Skip(i + 1).ToList();
+                            var firstBeta = new HashSet<string>();
+                            ComputeFirstForSequence(beta, firstBeta);
+
+                            _followSets[currentSymbol].UnionWith(firstBeta.Where(s => s != "ε"));
+
+                            // Если β ⇒* ε, добавляем FOLLOW(A)
+                            if (firstBeta.Contains("ε"))
+                            {
+                                _followSets[currentSymbol].UnionWith(_followSets[nonTerminal]);
+                            }
+                        }
+                        // Случай 2: A → αB - добавляем FOLLOW(A)
+                        else
+                        {
+                            _followSets[currentSymbol].UnionWith(_followSets[nonTerminal]);
+                        }
+
+                        if (_followSets[currentSymbol].Count > oldCount)
+                        {
+                            changed = true;
+                        }
+                    }
+                }
+            }
+        } while (changed);
     }
 
     public void RegexRead(List<KeyValuePair<string, string>> grammarVector, string regularExpression)
@@ -226,11 +400,22 @@ public class GrammarReader
             foreach (var state in _states)
             {
                 file.WriteLine(
-                    $"{state.Id};{state.Name};{state.To};{string.Join(",", state.NextSymbolSet)};{state.Shift};{state.Error};{state.ToStack};{state.End}");
+                    $"{state.Id};{state.Name};{state.To};{string.Join(",", ToBrackets(state.NextSymbolSet))};{state.Shift};{state.Error};{state.ToStack};{state.End}");
             }
 
             file.WriteLine();
         }
+    }
+
+    private HashSet<string> ToBrackets(HashSet<string> NextSymbolSet)
+    {
+        HashSet<string> NextSymbolSetNew = new HashSet<string>();
+        foreach (var sym in NextSymbolSet)
+        {
+            NextSymbolSetNew.Add(sym != "," ? sym : "\',\'");
+        }
+
+        return NextSymbolSetNew;
     }
 
     private static readonly string N_TERM = $@"<[\wа-яА-Я]+>";
