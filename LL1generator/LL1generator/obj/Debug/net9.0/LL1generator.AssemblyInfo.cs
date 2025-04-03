@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("LL1generator_v2")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+82562208e6d59641fb3aedec34121b47d1230912")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+2c85a05c5be29c73d0380bf0727830860f046764")]
 [assembly: System.Reflection.AssemblyProductAttribute("LL1generator_v2")]
 [assembly: System.Reflection.AssemblyTitleAttribute("LL1generator_v2")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

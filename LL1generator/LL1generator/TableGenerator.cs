@@ -41,9 +41,7 @@ public class GrammarReader
     {
         List<string> tokens = new List<string>();
 
-        string pattern = $@"<[^>]+>|[\wа-яА-Яε=+*,()]+|ε|⟂";
-
-        Regex regex = new Regex(pattern);
+        Regex regex = new Regex(Pattern);
         MatchCollection matches = regex.Matches(input);
 
         foreach (Match match in matches)
@@ -160,6 +158,11 @@ public class GrammarReader
             if (state.NextSymbolSet.Count == 0)
             {
                 state.NextSymbolSet = combinedSets[state.Name];
+            }
+            if (state.NextSymbolSet.Contains("ε"))
+            {
+                state.NextSymbolSet.UnionWith(_followSets[state.Name]);
+                state.NextSymbolSet.Remove("ε");
             }
             
         }
@@ -418,8 +421,9 @@ public class GrammarReader
         return NextSymbolSetNew;
     }
 
-    private static readonly string N_TERM = $@"<[\wа-яА-Я]+>";
-    private static readonly string TERM = $@"(?:[\wа-яА-Я⟂ε=+*,()]|ε)";
+    private static readonly string N_TERM = $@"<[\wа-яА-Я'`]+>";
+    private static readonly string TERM = $@"(?:[\wа-яА-Я⟂'`=+*,()]|ε)";
+    private static readonly string Pattern = $@"<[^>]+>|[\wа-яА-Я'`=+*,()]+|ε|⟂";
     private static readonly string ANY = $@"(?:{N_TERM}|{TERM}|{OR})";
     private const string TO = @"\s*->\s*";
     private const string OR = @"\s*\|\s*";
