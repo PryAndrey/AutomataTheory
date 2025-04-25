@@ -60,7 +60,7 @@ public class GrammarReader
 
         foreach (string match in matches)
         {
-            var token = ExtractTokens(match.Replace(" ", ""));
+            var token = ExtractTokens(match);
             if (token.Count > 0)
             {
                 parsedParams.Add(token);
@@ -155,16 +155,17 @@ public class GrammarReader
             {
                 state.To = _statesNamesToIndex[state.Name];
             }
+
             if (state.NextSymbolSet.Count == 0)
             {
                 state.NextSymbolSet = combinedSets[state.Name];
             }
+
             if (state.NextSymbolSet.Contains("ε"))
             {
                 state.NextSymbolSet.UnionWith(_followSets[state.Name]);
                 state.NextSymbolSet.Remove("ε");
             }
-            
         }
     }
 
@@ -300,7 +301,7 @@ public class GrammarReader
         }
 
         _followSets[statesRules.First().Key].Add("$");
-        
+
         bool changed;
         do
         {
@@ -372,6 +373,11 @@ public class GrammarReader
 
         foreach (var line in File.ReadLines(fileName))
         {
+            if (line.Length == 0)
+            {
+                continue;
+            }
+
             if (!line.Contains("->"))
             {
                 regularExpression += line;

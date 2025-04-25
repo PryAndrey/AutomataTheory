@@ -395,6 +395,7 @@ void Scanner::ScanFile(const std::string &fileName, const std::string &outFilena
     while (true) {
         const auto token = FindToken(file);
         if (token.m_type == "EOF") {
+            WriteTokenToFile(outFile, token);
             break;
         }
         if (token.m_type == "OR")

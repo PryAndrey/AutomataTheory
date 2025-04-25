@@ -1,5 +1,51 @@
-<Z> -> <S>⟂
-<S> -> <A'><B'><C'>
-<A'> -> a<A'> | ε
-<B'> -> b<B'> | ε
-<C'> -> c<C'> | ε
+<Z> -> <program>⟂
+
+<program> -> PROGRAM <program_T1>
+<program_T1> -> IDENTIFIER <program_T2>
+<program_T2> -> SEMICOLON <program_body>
+<program_body> -> <declarations> <block> <program_end>
+<program_end> -> DOT
+
+<declarations> -> <var_decl> | ε
+<var_decl> -> VAR <var_list>
+<var_list> -> <var_def> <var_list_tail>
+<var_list_tail> -> SEMICOLON <var_def> <var_list_tail> | ε
+<var_def> -> <id_list> COLON <type>
+
+<id_list> -> IDENTIFIER <id_list_tail>
+<id_list_tail> -> COMMA <id_list_tail_T1> | ε
+<id_list_tail_T1> -> IDENTIFIER <id_list_tail>
+
+<type> -> INTEGER | <type_array_start>
+<type_array_start> -> ARRAY <type_array_T1>
+<type_array_T1> -> LEFT_BRACKET <type_array_T2>
+<type_array_T2> -> INTEGER <type_array_T3>
+<type_array_T3> -> DOT <type_array_T4>
+<type_array_T4> -> DOT <type_array_T5>
+<type_array_T5> -> INTEGER <type_array_T6>
+<type_array_T6> -> RIGHT_BRACKET <type_array_T7>
+<type_array_T7> -> OF <type_array_T8>
+<type_array_T8> -> INTEGER
+
+<block> -> BEGIN <stmt_list> END
+<stmt_list> -> <stmt> <stmt_list_tail>
+<stmt_list_tail> -> SEMICOLON <stmt> <stmt_list_tail> | ε
+<stmt> -> <simple_stmt> | <compound_stmt>
+<simple_stmt> -> <assign_stmt> | ε
+<assign_stmt> -> IDENTIFIER <assign_stmt_T1>
+<assign_stmt_T1> -> ASSIGN <expr>
+
+<expr> -> <term> <expr_tail>
+<expr_tail> -> <add_op> <term> <expr_tail> | ε
+<add_op> -> PLUS | MINUS
+<term> -> <factor> <term_tail>
+<term_tail> -> <mul_op> <factor> <term_tail> | ε
+<mul_op> -> MULTIPLICATION | DIVIDE
+
+<factor> -> IDENTIFIER | INTEGER | LEFT_PAREN <expr> RIGHT_PAREN | IDENTIFIER <array_access>
+<array_access> -> LEFT_BRACKET <expr> RIGHT_BRACKET | ε
+
+<compound_stmt> -> <if_stmt> | <repeat_stmt>
+<if_stmt> -> IF <expr> THEN <stmt> <else_part>
+<else_part> -> ELSE <stmt> | ε
+<repeat_stmt> -> REPEAT <stmt_list> UNTIL <expr>

@@ -8,8 +8,8 @@ int main(int argc, char *argv[]) {
         return 1;
     }
 
-    std::string ruleFile = "./Scanner/rule.csv"; // Для тестов
-//    std::string ruleFile = "../rule.csv";
+//    std::string ruleFile = "./Scanner/rule.csv"; // Для тестов
+    std::string ruleFile = "../rule.csv";
     std::string inputFile;
     std::string outputFile;
 
