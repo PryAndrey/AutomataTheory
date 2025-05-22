@@ -2,6 +2,8 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LL1generator", "LL1generator\LL1generator.csproj", "{62D13297-7E71-41DF-9B42-7E46BC8C1DF2}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GrammarProcessing", "GrammarProcessing\GrammarProcessing.csproj", "{FBE3D067-A087-49C4-B1B3-35F0495AA6FB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -12,5 +14,9 @@ Global
 		{62D13297-7E71-41DF-9B42-7E46BC8C1DF2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{62D13297-7E71-41DF-9B42-7E46BC8C1DF2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{62D13297-7E71-41DF-9B42-7E46BC8C1DF2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FBE3D067-A087-49C4-B1B3-35F0495AA6FB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FBE3D067-A087-49C4-B1B3-35F0495AA6FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FBE3D067-A087-49C4-B1B3-35F0495AA6FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FBE3D067-A087-49C4-B1B3-35F0495AA6FB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

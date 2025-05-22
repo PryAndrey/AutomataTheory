@@ -10,12 +10,12 @@
 using System;
 using System.Reflection;
 
-[assembly: System.Reflection.AssemblyCompanyAttribute("LL1generator_v2")]
+[assembly: System.Reflection.AssemblyCompanyAttribute("GrammarProcessing")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
 [assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+48d1a9ff8b8627e2d908f583a41a9ed197414e7a")]
-[assembly: System.Reflection.AssemblyProductAttribute("LL1generator_v2")]
-[assembly: System.Reflection.AssemblyTitleAttribute("LL1generator_v2")]
+[assembly: System.Reflection.AssemblyProductAttribute("GrammarProcessing")]
+[assembly: System.Reflection.AssemblyTitleAttribute("GrammarProcessing")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
 
 // Создано классом WriteCodeFragment MSBuild.

@@ -1,171 +1,104 @@
-Id;Name;To;Set;Shift;Error;Stack;End
-0;<Z>;1;PROGRAM;False;True;False;False
-1;<program>;3;PROGRAM;False;True;True;False
-2;⟂;-1;⟂;True;True;False;True
-3;<program>;4;PROGRAM;False;True;False;False
-4;PROGRAM;5;PROGRAM;True;True;False;False
-5;<program_T1>;6;IDENTIFIER;False;True;False;False
-6;<program_T1>;7;IDENTIFIER;False;True;False;False
-7;IDENTIFIER;8;IDENTIFIER;True;True;False;False
-8;<program_T2>;9;SEMICOLON;False;True;False;False
-9;<program_T2>;10;SEMICOLON;False;True;False;False
-10;SEMICOLON;11;SEMICOLON;True;True;False;False
-11;<program_body>;12;BEGIN,VAR;False;True;False;False
-12;<program_body>;13;VAR,BEGIN;False;True;False;False
-13;<declarations>;18;VAR,BEGIN;False;True;True;False
-14;<block>;79;BEGIN;False;True;True;False
-15;<program_end>;16;DOT;False;True;False;False
-16;<program_end>;17;DOT;False;True;False;False
-17;DOT;-1;DOT;True;True;False;False
-18;<declarations>;20;VAR;False;False;False;False
-19;<declarations>;21;BEGIN;False;True;False;False
-20;<var_decl>;22;VAR;False;True;False;False
-21;ε;-1;BEGIN;False;True;False;False
-22;<var_decl>;23;VAR;False;True;False;False
-23;VAR;24;VAR;True;True;False;False
-24;<var_list>;25;IDENTIFIER;False;True;False;False
-25;<var_list>;26;IDENTIFIER;False;True;False;False
-26;<var_def>;34;IDENTIFIER;False;True;True;False
-27;<var_list_tail>;28;SEMICOLON,BEGIN;False;True;False;False
-28;<var_list_tail>;30;SEMICOLON;False;False;False;False
-29;<var_list_tail>;33;BEGIN;False;True;False;False
-30;SEMICOLON;31;SEMICOLON;True;True;False;False
-31;<var_def>;34;IDENTIFIER;False;True;True;False
-32;<var_list_tail>;28;SEMICOLON,BEGIN;False;True;False;False
-33;ε;-1;BEGIN;False;True;False;False
-34;<var_def>;35;IDENTIFIER;False;True;False;False
-35;<id_list>;38;IDENTIFIER;False;True;True;False
-36;COLON;37;COLON;True;True;False;False
-37;<type>;49;INTEGER,ARRAY;False;True;False;False
-38;<id_list>;39;IDENTIFIER;False;True;False;False
-39;IDENTIFIER;40;IDENTIFIER;True;True;False;False
-40;<id_list_tail>;41;COMMA,COLON;False;True;False;False
-41;<id_list_tail>;43;COMMA;False;False;False;False
-42;<id_list_tail>;45;COLON;False;True;False;False
-43;COMMA;44;COMMA;True;True;False;False
-44;<id_list_tail_T1>;46;IDENTIFIER;False;True;False;False
-45;ε;-1;COLON;False;True;False;False
-46;<id_list_tail_T1>;47;IDENTIFIER;False;True;False;False
-47;IDENTIFIER;48;IDENTIFIER;True;True;False;False
-48;<id_list_tail>;41;COMMA,COLON;False;True;False;False
-49;<type>;51;INTEGER;False;False;False;False
-50;<type>;52;ARRAY;False;True;False;False
-51;INTEGER;-1;INTEGER;True;True;False;False
-52;<type_array_start>;53;ARRAY;False;True;False;False
-53;<type_array_start>;54;ARRAY;False;True;False;False
-54;ARRAY;55;ARRAY;True;True;False;False
-55;<type_array_T1>;56;LEFT_BRACKET;False;True;False;False
-56;<type_array_T1>;57;LEFT_BRACKET;False;True;False;False
-57;LEFT_BRACKET;58;LEFT_BRACKET;True;True;False;False
-58;<type_array_T2>;59;INTEGER;False;True;False;False
-59;<type_array_T2>;60;INTEGER;False;True;False;False
-60;INTEGER;61;INTEGER;True;True;False;False
-61;<type_array_T3>;62;DOT;False;True;False;False
-62;<type_array_T3>;63;DOT;False;True;False;False
-63;DOT;64;DOT;True;True;False;False
-64;<type_array_T4>;65;DOT;False;True;False;False
-65;<type_array_T4>;66;DOT;False;True;False;False
-66;DOT;67;DOT;True;True;False;False
-67;<type_array_T5>;68;INTEGER;False;True;False;False
-68;<type_array_T5>;69;INTEGER;False;True;False;False
-69;INTEGER;70;INTEGER;True;True;False;False
-70;<type_array_T6>;71;RIGHT_BRACKET;False;True;False;False
-71;<type_array_T6>;72;RIGHT_BRACKET;False;True;False;False
-72;RIGHT_BRACKET;73;RIGHT_BRACKET;True;True;False;False
-73;<type_array_T7>;74;OF;False;True;False;False
-74;<type_array_T7>;75;OF;False;True;False;False
-75;OF;76;OF;True;True;False;False
-76;<type_array_T8>;77;INTEGER;False;True;False;False
-77;<type_array_T8>;78;INTEGER;False;True;False;False
-78;INTEGER;-1;INTEGER;True;True;False;False
-79;<block>;80;BEGIN;False;True;False;False
-80;BEGIN;81;BEGIN;True;True;False;False
-81;<stmt_list>;83;SEMICOLON,IDENTIFIER,IF,REPEAT,END,UNTIL;False;True;True;False
-82;END;-1;END;True;True;False;False
-83;<stmt_list>;84;IDENTIFIER,IF,REPEAT,SEMICOLON,END,UNTIL;False;True;False;False
-84;<stmt>;92;IDENTIFIER,IF,REPEAT,SEMICOLON,END,ELSE,UNTIL;False;True;True;False
-85;<stmt_list_tail>;86;SEMICOLON,END,UNTIL;False;True;False;False
-86;<stmt_list_tail>;88;SEMICOLON;False;False;False;False
-87;<stmt_list_tail>;91;END,UNTIL;False;True;False;False
-88;SEMICOLON;89;SEMICOLON;True;True;False;False
-89;<stmt>;92;IDENTIFIER,IF,REPEAT,SEMICOLON,END,ELSE,UNTIL;False;True;True;False
-90;<stmt_list_tail>;86;SEMICOLON,END,UNTIL;False;True;False;False
-91;ε;-1;END,UNTIL;False;True;False;False
-92;<stmt>;94;IDENTIFIER,SEMICOLON,END,ELSE,UNTIL;False;False;False;False
-93;<stmt>;95;IF,REPEAT;False;True;False;False
-94;<simple_stmt>;96;IDENTIFIER,SEMICOLON,END,ELSE,UNTIL;False;True;False;False
-95;<compound_stmt>;149;IF,REPEAT;False;True;False;False
-96;<simple_stmt>;98;IDENTIFIER;False;False;False;False
-97;<simple_stmt>;99;SEMICOLON,END,ELSE,UNTIL;False;True;False;False
-98;<assign_stmt>;100;IDENTIFIER;False;True;False;False
-99;ε;-1;SEMICOLON,END,ELSE,UNTIL;False;True;False;False
-100;<assign_stmt>;101;IDENTIFIER;False;True;False;False
-101;IDENTIFIER;102;IDENTIFIER;True;True;False;False
-102;<assign_stmt_T1>;103;ASSIGN;False;True;False;False
-103;<assign_stmt_T1>;104;ASSIGN;False;True;False;False
-104;ASSIGN;105;ASSIGN;True;True;False;False
-105;<expr>;106;IDENTIFIER,INTEGER,LEFT_PAREN;False;True;False;False
-106;<expr>;107;IDENTIFIER,INTEGER,LEFT_PAREN;False;True;False;False
-107;<term>;119;IDENTIFIER,INTEGER,LEFT_PAREN;False;True;True;False
-108;<expr_tail>;109;PLUS,MINUS,SEMICOLON,END,RIGHT_PAREN,RIGHT_BRACKET,THEN,ELSE,UNTIL;False;True;False;False
-109;<expr_tail>;111;PLUS,MINUS;False;False;False;False
-110;<expr_tail>;114;SEMICOLON,END,RIGHT_PAREN,RIGHT_BRACKET,THEN,ELSE,UNTIL;False;True;False;False
-111;<add_op>;115;PLUS,MINUS;False;True;True;False
-112;<term>;119;IDENTIFIER,INTEGER,LEFT_PAREN;False;True;True;False
-113;<expr_tail>;109;PLUS,MINUS,SEMICOLON,END,RIGHT_PAREN,RIGHT_BRACKET,THEN,ELSE,UNTIL;False;True;False;False
-114;ε;-1;SEMICOLON,END,RIGHT_PAREN,RIGHT_BRACKET,THEN,ELSE,UNTIL;False;True;False;False
-115;<add_op>;117;PLUS;False;False;False;False
-116;<add_op>;118;MINUS;False;True;False;False
-117;PLUS;-1;PLUS;True;True;False;False
-118;MINUS;-1;MINUS;True;True;False;False
-119;<term>;120;IDENTIFIER,INTEGER,LEFT_PAREN;False;True;False;False
-120;<factor>;132;IDENTIFIER,INTEGER,LEFT_PAREN;False;True;True;False
-121;<term_tail>;122;MULTIPLICATION,DIVIDE,PLUS,MINUS,SEMICOLON,END,RIGHT_PAREN,RIGHT_BRACKET,THEN,ELSE,UNTIL;False;True;False;False
-122;<term_tail>;124;MULTIPLICATION,DIVIDE;False;False;False;False
-123;<term_tail>;127;PLUS,MINUS,SEMICOLON,END,RIGHT_PAREN,RIGHT_BRACKET,THEN,ELSE,UNTIL;False;True;False;False
-124;<mul_op>;128;MULTIPLICATION,DIVIDE;False;True;True;False
-125;<factor>;132;IDENTIFIER,INTEGER,LEFT_PAREN;False;True;True;False
-126;<term_tail>;122;MULTIPLICATION,DIVIDE,PLUS,MINUS,SEMICOLON,END,RIGHT_PAREN,RIGHT_BRACKET,THEN,ELSE,UNTIL;False;True;False;False
-127;ε;-1;PLUS,MINUS,SEMICOLON,END,RIGHT_PAREN,RIGHT_BRACKET,THEN,ELSE,UNTIL;False;True;False;False
-128;<mul_op>;130;MULTIPLICATION;False;False;False;False
-129;<mul_op>;131;DIVIDE;False;True;False;False
-130;MULTIPLICATION;-1;MULTIPLICATION;True;True;False;False
-131;DIVIDE;-1;DIVIDE;True;True;False;False
-132;<factor>;136;IDENTIFIER;False;False;False;False
-133;<factor>;137;INTEGER;False;False;False;False
-134;<factor>;138;LEFT_PAREN;False;False;False;False
-135;<factor>;141;IDENTIFIER;False;True;False;False
-136;IDENTIFIER;-1;IDENTIFIER;True;True;False;False
-137;INTEGER;-1;INTEGER;True;True;False;False
-138;LEFT_PAREN;139;LEFT_PAREN;True;True;False;False
-139;<expr>;106;IDENTIFIER,INTEGER,LEFT_PAREN;False;True;True;False
-140;RIGHT_PAREN;-1;RIGHT_PAREN;True;True;False;False
-141;IDENTIFIER;142;IDENTIFIER;True;True;False;False
-142;<array_access>;143;LEFT_BRACKET,MULTIPLICATION,DIVIDE,PLUS,MINUS,SEMICOLON,END,RIGHT_PAREN,RIGHT_BRACKET,THEN,ELSE,UNTIL;False;True;False;False
-143;<array_access>;145;LEFT_BRACKET;False;False;False;False
-144;<array_access>;148;MULTIPLICATION,DIVIDE,PLUS,MINUS,SEMICOLON,END,RIGHT_PAREN,RIGHT_BRACKET,THEN,ELSE,UNTIL;False;True;False;False
-145;LEFT_BRACKET;146;LEFT_BRACKET;True;True;False;False
-146;<expr>;106;IDENTIFIER,INTEGER,LEFT_PAREN;False;True;True;False
-147;RIGHT_BRACKET;-1;RIGHT_BRACKET;True;True;False;False
-148;ε;-1;MULTIPLICATION,DIVIDE,PLUS,MINUS,SEMICOLON,END,RIGHT_PAREN,RIGHT_BRACKET,THEN,ELSE,UNTIL;False;True;False;False
-149;<compound_stmt>;151;IF;False;False;False;False
-150;<compound_stmt>;152;REPEAT;False;True;False;False
-151;<if_stmt>;153;IF;False;True;False;False
-152;<repeat_stmt>;164;REPEAT;False;True;False;False
-153;<if_stmt>;154;IF;False;True;False;False
-154;IF;155;IF;True;True;False;False
-155;<expr>;106;IDENTIFIER,INTEGER,LEFT_PAREN;False;True;True;False
-156;THEN;157;THEN;True;True;False;False
-157;<stmt>;92;IDENTIFIER,IF,REPEAT,SEMICOLON,END,ELSE,UNTIL;False;True;True;False
-158;<else_part>;159;ELSE,SEMICOLON,END,UNTIL;False;True;False;False
-159;<else_part>;161;ELSE;False;False;False;False
-160;<else_part>;163;SEMICOLON,END,ELSE,UNTIL;False;True;False;False
-161;ELSE;162;ELSE;True;True;False;False
-162;<stmt>;92;IDENTIFIER,IF,REPEAT,SEMICOLON,END,ELSE,UNTIL;False;True;False;False
-163;ε;-1;SEMICOLON,END,ELSE,UNTIL;False;True;False;False
-164;<repeat_stmt>;165;REPEAT;False;True;False;False
-165;REPEAT;166;REPEAT;True;True;False;False
-166;<stmt_list>;83;SEMICOLON,IDENTIFIER,IF,REPEAT,END,UNTIL;False;True;True;False
-167;UNTIL;168;UNTIL;True;True;False;False
-168;<expr>;106;IDENTIFIER,INTEGER,LEFT_PAREN;False;True;False;False
-
+;;;ACTION;ACTION;ACTION;ACTION;ACTION;ACTION;ACTION;ACTION;ACTION;ACTION;ACTION;ACTION;ACTION;ACTION;ACTION;ACTION;ACTION;ACTION;ACTION;ACTION;ACTION;ACTION;ACTION;ACTION;ACTION;ACTION;ACTION;ACTION;ACTION;ACTION;ACTION;GOTO;GOTO;GOTO;GOTO;GOTO;GOTO;GOTO;GOTO;GOTO;GOTO;GOTO;GOTO;GOTO;GOTO;GOTO;GOTO;GOTO;GOTO;GOTO;GOTO;GOTO;GOTO;GOTO;GOTO;GOTO;GOTO;GOTO;GOTO;GOTO;GOTO;GOTO
+STATE;STATE_NAME;RULE;$;ARRAY;ASSIGN;BEGIN;COLON;COMMA;DIVIDE;DOT;ELSE;END;IDENTIFIER;IF;INT;INTEGER;LEFT_BRACKET;LEFT_PAREN;MINUS;MULTIPLICATION;OF;PLUS;PROGRAM;REPEAT;RIGHT_BRACKET;RIGHT_PAREN;SEMICOLON;THEN;UNTIL;VAR;ε;�;�;<Z>;<add_op>;<array_access>;<assign_stmt>;<assign_stmt_T1>;<assign_stmt_T2>;<block>;<compound_stmt>;<declarations>;<else_part>;<expr>;<expr_tail>;<factor>;<factor_T1>;<id_list>;<id_list_tail>;<if_stmt>;<mul_op>;<program>;<repeat_stmt>;<simple_stmt>;<stmt>;<stmt_list>;<stmt_list_tail>;<term>;<term_tail>;<type>;<var_decl>;<var_def>;<var_list>;<var_list_tail>
+0;init;;;;;;;;;;;;;;;;;;;;;;s3;;;;;;;;;;;1;;;;;;;;;;;;;;;;;;2;;;;;;;;;;;;
+1;<Z> <- 0;;acc;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+2;<program> <- 0;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;s4;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+3;PROGRAM <- 0;;;;;;;;;;;;s5;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+4;� <- 2;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;s6;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+5;IDENTIFIER <- 3;;;;;;;;;;;;;;;;;;;;;;;;;;s7;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+6;� <- 4;;r1;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+7;SEMICOLON <- 5;;;;;;;;;;;;;;;;;;;;;;;;;;;;;s10;s11;;;;;;;;;;;8;;;;;;;;;;;;;;;;;;;9;;;
+8;<declarations> <- 7;;;;;s13;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;12;;;;;;;;;;;;;;;;;;;;;;;;
+9;<var_decl> <- 7;;;;;r3;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+10;VAR <- 7;;;;;;;;;;;;s17;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;14;;;;;;;;;;;;;;15;16;
+11;ε <- 7;;;;;r4;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+12;<block> <- 8;;;;;;;;;s18;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+13;BEGIN <- 8;;;;;;;;;;;;s26;s27;;;;;;;;;;s28;;;;;;;s29;;;;;;19;;;;20;;;;;;;;;21;;;22;23;24;25;;;;;;;;
+14;<id_list> <- 10;;;;;;s30;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+15;<var_def> <- 10;;;;;;;;;;;;;;;;;;;;;;;;;;s32;;;;s33;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;31
+16;<var_list> <- 10;;;;;r5;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+17;IDENTIFIER <- 10;;;;;;;s35;;;;;;;;;;;;;;;;;;;;;;;s36;;;;;;;;;;;;;;;;;;34;;;;;;;;;;;;;;;
+18;DOT <- 12;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;r2;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+19;<assign_stmt> <- 13;;;;;;;;;;r21;;;;;;;;;;;;;;;;r21;;;;r21;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+20;<compound_stmt> <- 13;;;;;;;;;;r20;;;;;;;;;;;;;;;;r20;;;;r20;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+21;<if_stmt> <- 13;;;;;;;;;;r45;;;;;;;;;;;;;;;;r45;;;;r45;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+22;<repeat_stmt> <- 13;;;;;;;;;;r44;;;;;;;;;;;;;;;;r44;;;;r44;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+23;<simple_stmt> <- 13;;;;;;;;;;r19;;;;;;;;;;;;;;;;r19;;;;r19;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+24;<stmt> <- 13;;;;;;;;;;;;;;;;;;;;;;;;;;s38;;;;s39;;;;;;;;;;;;;;;;;;;;;;;;;;37;;;;;;;
+25;<stmt_list> <- 13;;;;;;;;;;;s40;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+26;IDENTIFIER <- 13;;;;s44;;;;;;;;;;;;s45;;;;;;;;;;;;;;s46;;;;;41;;42;43;;;;;;;;;;;;;;;;;;;;;;;;;
+27;IF <- 13;;;;;;;;;;;;s50;;s51;;;s52;;;;;;;;;;;;;;;;;;;;;;;;;;47;;48;;;;;;;;;;;;49;;;;;;
+28;REPEAT <- 13;;;;;;;;;;;;s26;s27;;;;;;;;;;s28;;;;;;;s29;;;;;;19;;;;20;;;;;;;;;21;;;22;23;24;53;;;;;;;;
+29;ε <- 13;;;;;;;;;;r22;;;;;;;;;;;;;;;;r22;;;;r22;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+30;COLON <- 14;;;s55;;;;;;;;;;;;s56;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;54;;;;
+31;<var_list_tail> <- 15;;;;;r6;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+32;SEMICOLON <- 15;;;;;;;;;;;;s17;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;14;;;;;;;;;;;;;;57;;
+33;ε <- 15;;;;;r8;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+34;<id_list_tail> <- 17;;;;;;r10;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+35;COMMA <- 17;;;;;;;;;;;;s58;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+36;ε <- 17;;;;;;r12;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+37;<stmt_list_tail> <- 24;;;;;;;;;;;r16;;;;;;;;;;;;;;;;;r16;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+38;SEMICOLON <- 24;;;;;;;;;;;;s26;s27;;;;;;;;;;s28;;;;;;;s29;;;;;;19;;;;20;;;;;;;;;21;;;22;23;59;;;;;;;;;
+39;ε <- 24;;;;;;;;;;;r17;;;;;;;;;;;;;;;;;r17;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+40;END <- 25;;;;;;;;;r15;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+41;<array_access> <- 26;;;;s44;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;60;;;;;;;;;;;;;;;;;;;;;;;;;
+42;<assign_stmt_T1> <- 26;;;;;;;;;;r23;;;;;;;;;;;;;;;;r23;;;;r23;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+43;<assign_stmt_T2> <- 26;;;;;;;;;;r25;;;;;;;;;;;;;;;;r25;;;;r25;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+44;ASSIGN <- 26;;;;;;;;;;;;s50;;s51;;;s52;;;;;;;;;;;;;;;;;;;;;;;;;;61;;48;;;;;;;;;;;;49;;;;;;
+45;LEFT_BRACKET <- 26;;;;;;;;;;;;s50;;s51;;;s52;;;;;;;;;;;;;;;;;;;;;;;;;;62;;48;;;;;;;;;;;;49;;;;;;
+46;ε <- 26;;;;r42;;;;r42;;;;;;;;;;;r42;;;;;;;;;;;r42;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+47;<expr> <- 27;;;;;;;;;;;;;;;;;;;;;;;;;;;s63;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+48;<factor> <- 27;;;;;;;;s66;;;;;;;;;;;s67;;;;;;;;;;;s68;;;;;;;;;;;;;;;;;;;;64;;;;;;;;65;;;;;
+49;<term> <- 27;;;;;;;;;;;;;;;;;;s71;;;s72;;;;;;;;;s73;;;;69;;;;;;;;;;70;;;;;;;;;;;;;;;;;;;
+50;IDENTIFIER <- 27;;;;;;;;;;;;;;;;s45;;;;;;;;;;;;;;s76;;;;;74;;;;;;;;;;;75;;;;;;;;;;;;;;;;;
+51;INT <- 27;;;;;;;;r38;;;;;;;;;;;r38;;;;;;;;;;;r38;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+52;LEFT_PAREN <- 27;;;;;;;;;;;;s50;;s51;;;s52;;;;;;;;;;;;;;;;;;;;;;;;;;77;;48;;;;;;;;;;;;49;;;;;;
+53;<stmt_list> <- 28;;;;;;;;;;;;;;;;;;;;;;;;;;;;s78;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+54;<type> <- 30;;;;;;;;;;;;;;;;;;;;;;;;;;r9;;;;r9;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+55;ARRAY <- 30;;;;;;;;;;;;;;;;s79;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+56;INTEGER <- 30;;;;;;;;;;;;;;;;;;;;;;;;;;r14;;;;r14;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+57;<var_def> <- 32;;;;;;;;;;;;;;;;;;;;;;;;;;s32;;;;s33;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;80
+58;IDENTIFIER <- 35;;;;;;;s35;;;;;;;;;;;;;;;;;;;;;;;s36;;;;;;;;;;;;;;;;;;81;;;;;;;;;;;;;;;
+59;<stmt> <- 38;;;;;;;;;;;;;;;;;;;;;;;;;;s38;;;;s39;;;;;;;;;;;;;;;;;;;;;;;;;;82;;;;;;;
+60;<assign_stmt_T2> <- 41;;;;;;;;;;r24;;;;;;;;;;;;;;;;r24;;;;r24;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+61;<expr> <- 44;;;;;;;;;;r26;;;;;;;;;;;;;;;;r26;;;;r26;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+62;<expr> <- 45;;;;;;;;;;;;;;;;;;;;;;;;s83;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+63;THEN <- 47;;;;;;;;;;;;s26;s27;;;;;;;;;;s28;;;;;;;s29;;;;;;19;;;;20;;;;;;;;;21;;;22;23;84;;;;;;;;;
+64;<mul_op> <- 48;;;;;;;;;;;;s50;;s51;;;s52;;;;;;;;;;;;;;;;;;;;;;;;;;;;85;;;;;;;;;;;;;;;;;;
+65;<term_tail> <- 48;;;;;;;;;;;;;;;;;;r32;;;r32;;;;;;;;;r32;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+66;DIVIDE <- 48;;;;;;;;;;;;r35;;r35;;;r35;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+67;MULTIPLICATION <- 48;;;;;;;;;;;;r36;;r36;;;r36;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+68;ε <- 48;;;;;;;;;;;;;;;;;;r34;;;r34;;;;;;;;;r34;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+69;<add_op> <- 49;;;;;;;;;;;;s50;;s51;;;s52;;;;;;;;;;;;;;;;;;;;;;;;;;;;48;;;;;;;;;;;;86;;;;;;
+70;<expr_tail> <- 49;;;;;;;;;;r27;;;;;;;;;;;;;;r27;r27;r27;r27;;;r27;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+71;MINUS <- 49;;;;;;;;;;;;r30;;r30;;;r30;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+72;PLUS <- 49;;;;;;;;;;;;r31;;r31;;;r31;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+73;ε <- 49;;;;;;;;;;r29;;;;;;;;;;;;;;r29;r29;r29;r29;;;r29;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+74;<array_access> <- 50;;;;;;;;r40;;;;;;;;;;;r40;;;;;;;;;;;r40;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+75;<factor_T1> <- 50;;;;;;;;r39;;;;;;;;;;;r39;;;;;;;;;;;r39;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+76;ε <- 50;;;;r42;;;;r42/r41;;;;;;;;;;;r42/r41;;;;;;;;;;;r42/r41;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+77;<expr> <- 52;;;;;;;;;;;;;;;;;;;;;;;;;s87;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+78;UNTIL <- 53;;;;;;;;;;;;s50;;s51;;;s52;;;;;;;;;;;;;;;;;;;;;;;;;;88;;48;;;;;;;;;;;;49;;;;;;
+79;LEFT_BRACKET <- 55;;;;;;;;;;;;;;s89;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+80;<var_list_tail> <- 57;;;;;r7;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+81;<id_list_tail> <- 58;;;;;;r11;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+82;<stmt_list_tail> <- 59;;;;;;;;;;;r18;;;;;;;;;;;;;;;;;r18;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+83;RIGHT_BRACKET <- 62;;;;r43;;;;r43;;;;;;;;;;;r43;;;;;;;;;;;r43;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+84;<stmt> <- 63;;;;;;;;;;s91;;;;;;;;;;;;;;;;;;;;s92;;;;;;;;;;;;90;;;;;;;;;;;;;;;;;;;;;
+85;<factor> <- 64;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;s68;;;;;;;;;;;;;;;;;;;;64;;;;;;;;93;;;;;
+86;<term> <- 69;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;s73;;;;69;;;;;;;;;;94;;;;;;;;;;;;;;;;;;;
+87;RIGHT_PAREN <- 77;;;;;;;;r37;;;;;;;;;;;r37;;;;;;;;;;;r37;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+88;<expr> <- 78;;;;;;;;;;r49;;;;;;;;;;;;;;;;r49;;;;r49;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+89;INT <- 79;;;;;;;;;s95;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+90;<else_part> <- 84;;;;;;;;;;r46;;;;;;;;;;;;;;;;r46;;;;r46;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+91;ELSE <- 84;;;;;;;;;;;;s26;s27;;;;;;;;;;s28;;;;;;;s29;;;;;;19;;;;20;;;;;;;;;21;;;22;23;96;;;;;;;;;
+92;ε <- 84;;;;;;;;;;r48;;;;;;;;;;;;;;;;r48;;;;r48;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+93;<term_tail> <- 85;;;;;;;;;;;;;;;;;;r33;;;r33;;;;;;;;;r33;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+94;<expr_tail> <- 86;;;;;;;;;;r28;;;;;;;;;;;;;;r28;r28;r28;r28;;;r28;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+95;DOT <- 89;;;;;;;;;s97;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+96;<stmt> <- 91;;;;;;;;;;r47;;;;;;;;;;;;;;;;r47;;;;r47;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+97;DOT <- 95;;;;;;;;;;;;;;s98;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+98;INT <- 97;;;;;;;;;;;;;;;;;;;;;;;;s99;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+99;RIGHT_BRACKET <- 98;;;;;;;;;;;;;;;;;;;;s100;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+100;OF <- 99;;;;;;;;;;;;;;;s101;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+101;INTEGER <- 100;;;;;;;;;;;;;;;;;;;;;;;;;;r13;;;;r13;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

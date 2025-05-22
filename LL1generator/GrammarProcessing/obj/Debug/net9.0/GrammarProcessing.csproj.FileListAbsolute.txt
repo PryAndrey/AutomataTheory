@@ -1,0 +1,15 @@
+C:\Users\ANDREY\Documents\GitHub\AutomataTheory\LL1generator\GrammarProcessing\bin\Debug\net9.0\GrammarProcessing.exe
+C:\Users\ANDREY\Documents\GitHub\AutomataTheory\LL1generator\GrammarProcessing\bin\Debug\net9.0\GrammarProcessing.deps.json
+C:\Users\ANDREY\Documents\GitHub\AutomataTheory\LL1generator\GrammarProcessing\bin\Debug\net9.0\GrammarProcessing.runtimeconfig.json
+C:\Users\ANDREY\Documents\GitHub\AutomataTheory\LL1generator\GrammarProcessing\bin\Debug\net9.0\GrammarProcessing.dll
+C:\Users\ANDREY\Documents\GitHub\AutomataTheory\LL1generator\GrammarProcessing\bin\Debug\net9.0\GrammarProcessing.pdb
+C:\Users\ANDREY\Documents\GitHub\AutomataTheory\LL1generator\GrammarProcessing\obj\Debug\net9.0\GrammarProcessing.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\ANDREY\Documents\GitHub\AutomataTheory\LL1generator\GrammarProcessing\obj\Debug\net9.0\GrammarProcessing.AssemblyInfoInputs.cache
+C:\Users\ANDREY\Documents\GitHub\AutomataTheory\LL1generator\GrammarProcessing\obj\Debug\net9.0\GrammarProcessing.AssemblyInfo.cs
+C:\Users\ANDREY\Documents\GitHub\AutomataTheory\LL1generator\GrammarProcessing\obj\Debug\net9.0\GrammarProcessing.csproj.CoreCompileInputs.cache
+C:\Users\ANDREY\Documents\GitHub\AutomataTheory\LL1generator\GrammarProcessing\obj\Debug\net9.0\GrammarProcessing.sourcelink.json
+C:\Users\ANDREY\Documents\GitHub\AutomataTheory\LL1generator\GrammarProcessing\obj\Debug\net9.0\GrammarProcessing.dll
+C:\Users\ANDREY\Documents\GitHub\AutomataTheory\LL1generator\GrammarProcessing\obj\Debug\net9.0\refint\GrammarProcessing.dll
+C:\Users\ANDREY\Documents\GitHub\AutomataTheory\LL1generator\GrammarProcessing\obj\Debug\net9.0\GrammarProcessing.pdb
+C:\Users\ANDREY\Documents\GitHub\AutomataTheory\LL1generator\GrammarProcessing\obj\Debug\net9.0\GrammarProcessing.genruntimeconfig.cache
+C:\Users\ANDREY\Documents\GitHub\AutomataTheory\LL1generator\GrammarProcessing\obj\Debug\net9.0\ref\GrammarProcessing.dll

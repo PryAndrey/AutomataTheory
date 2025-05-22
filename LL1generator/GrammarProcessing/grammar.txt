@@ -24,7 +24,7 @@
 <mul_op> -> MULTIPLICATION | DIVIDE
 <factor> -> INT | LEFT_PAREN <expr> RIGHT_PAREN | IDENTIFIER <factor_T1>
 <factor_T1> -> <array_access> | ε
-<array_access> -> LEFT_BRACKET <expr> RIGHT_BRACKET | ε
+<array_access> -> LEFT_BRACKET <expr> RIGHT_BRACKET
 <compound_stmt> -> <if_stmt> | <repeat_stmt>
 <if_stmt> -> IF <expr> THEN <stmt> <else_part>
 <else_part> -> ELSE <stmt> | ε
